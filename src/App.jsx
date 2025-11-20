@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useMemo } from 'react';
-import { initializeApp } from 'firebase/app';
+import { initializeApp, getApps, getApp } from 'firebase/app';
 import { 
     getAuth, 
     signInAnonymously, 
@@ -33,7 +33,7 @@ const Icon = ({ children, className }) => (
 const TeamIcon = (props) => <Icon {...props}><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></Icon>;
 const ProgressIcon = (props) => <Icon {...props}><path d="M12 20V10"/><path d="M18 20V4"/><path d="M6 20v-4"/></Icon>;
 const ReportIcon = (props) => <Icon {...props}><path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><line x1="10" y1="9" x2="8" y2="9"/></Icon>;
-const DatabaseIcon = (props) => <Icon {...props}><ellipse cx="12" cy="5" rx="9" ry="3"/><path d="M3 5v14a9 3 0 0 0 18 0V5"/><path d="M3 12A9 3 0 0 0 21 12"/><path d="M3 19A9 3 0 0 0 21 19"/></Icon>;
+const DatabaseIcon = (props) => <Icon {...props}><ellipse cx="12" cy="5" rx="9" ry="3"/><path d="M3 5v14a9 3 0 0 0 18 0V5"/><path d="M3 12A9 9 0 0 0 21 12"/><path d="M3 19A9 9 0 0 0 21 19"/></Icon>;
 const EvaluateIcon = (props) => <Icon {...props}><path d="M12 20h.01"/><path d="M8.2 11.2a2 2 0 1 0 2.8 2.8"/><path d="M14.8 11.2a2 2 0 1 0 2.8 2.8"/><path d="M12 21a9 9 0 1 0 0-18 9 9 0 0 0 0 18z"/></Icon>;
 const PlusIcon = (props) => <Icon {...props}><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></Icon>;
 const TrashIcon = (props) => <Icon {...props}><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6"/><path d="M10 11v6"/><path d="M14 11v6"/><path d="M15 6V4a2 2 0 0 0-2-2h-2a2 2 0 0 0-2 2v2"/></Icon>;
@@ -53,6 +53,11 @@ const CameraIcon = (props) => <Icon {...props}><path d="M23 19a2 2 0 0 1-2 2H3a2
 const DownloadIcon = (props) => <Icon {...props}><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></Icon>;
 const EyeIcon = (props) => <Icon {...props}><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></Icon>;
 const GoogleIcon = ({ className }) => <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="currentColor" className={className}><path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" /><path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" /><path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" /><path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" /></svg>;
+const LinkExternalIcon = (props) => <Icon {...props}><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6" /><polyline points="15 3 21 3 21 9" /><line x1="10" y1="14" x2="21" y2="3" /></Icon>;
+const HomeIcon = (props) => <Icon {...props}><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></Icon>;
+const MenuIcon = (props) => <Icon {...props}><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="18" x2="21" y2="18"/></Icon>;
+const XIcon = (props) => <Icon {...props}><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></Icon>;
+
 
 // --- Configuration ---
 const VIEWS = { DASHBOARD: 'Dashboard', REGISTRATION: 'Registration', TRACKING: 'Progress', REPORTS: 'Reports', DATABASE: 'Projects', EVALUATION: 'Evaluation', ADMIN: 'Admin', PROFILE: 'Profile' };
@@ -61,7 +66,7 @@ const INITIAL_EVALUATION = { score: 0, feedback: "Awaiting review.", status: "Pe
 const ADMIN_EMAIL = "admin@protrack.edu";
 const ANONYMOUS_NAME_PREFIX = "Guest_";
 
-// --- Firebase Setup ---
+// --- Firebase Setup (Ensure this config is correct for your project) ---
 const appId = typeof __app_id !== 'undefined' ? __app_id : 'default-app-id';
 const firebaseConfig = {
   apiKey: "AIzaSyBVFyZfJr6fiYEM9lUf4IaknxzVkuIXGRM",
@@ -90,30 +95,40 @@ export default function App() {
     const [isUserAdmin, setIsUserAdmin] = useState(false);
     const [darkMode, setDarkMode] = useState(true);
     const [adminSelectedProject, setAdminSelectedProject] = useState(null);
+    const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
-    // --- Modern Theme Engine ---
+
+    // --- Modern Theme Engine (Refined Top Nav Layout) ---
     const toggleTheme = () => setDarkMode(!darkMode);
     
     const theme = {
-        appBg: darkMode ? 'bg-gray-950' : 'bg-white',
-        navBg: darkMode ? 'bg-gray-900/80 backdrop-blur-xl border-b border-gray-800' : 'bg-white/90 backdrop-blur-xl border-b border-gray-200',
-        textPrimary: darkMode ? 'text-white' : 'text-slate-900',
+        // Core colors for Slate/Indigo Palette
+        appBg: darkMode ? 'bg-gray-950' : 'bg-slate-50',
+        navBg: darkMode ? 'bg-gray-900/95 backdrop-blur-xl border-b border-slate-800' : 'bg-white/95 backdrop-blur-xl border-b border-slate-200',
+        textPrimary: darkMode ? 'text-gray-50' : 'text-slate-900',
         textSecondary: darkMode ? 'text-gray-400' : 'text-slate-500',
         heading: darkMode ? 'text-white' : 'text-slate-900',
+        
+        // Enhanced Card: Sharper corners and distinct shadow contrast
         card: darkMode 
-            ? 'bg-gray-800/50 border border-gray-700 shadow-xl' 
-            : 'bg-white border border-gray-200 shadow-lg shadow-slate-200/40',
+            ? 'bg-gray-900/50 border border-slate-800 shadow-2xl shadow-black/30' 
+            : 'bg-white border border-slate-200 shadow-xl shadow-slate-200/50',
+        // Sleeker Input fields
         input: darkMode 
-            ? 'bg-gray-900/50 border-gray-700 text-white focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500' 
-            : 'bg-white border-gray-300 text-slate-900 focus:border-indigo-600 focus:ring-1 focus:ring-indigo-600',
-        accentPrimary: 'bg-indigo-600 hover:bg-indigo-700 text-white shadow-lg shadow-indigo-600/20',
+            ? 'bg-slate-800 border-slate-700 text-white placeholder-gray-500 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500' 
+            : 'bg-white border-slate-300 text-slate-900 placeholder-slate-400 focus:border-indigo-600 focus:ring-2 focus:ring-indigo-600',
+        // Stronger Gradient for Primary Button
+        accentPrimary: 'bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 text-white shadow-xl shadow-indigo-500/40 transform active:scale-[.98]',
+        // Refined Secondary Button
         accentSecondary: darkMode 
-            ? 'bg-gray-700 hover:bg-gray-600 text-gray-200' 
-            : 'bg-gray-100 hover:bg-gray-200 text-slate-700 border border-gray-200',
-        navItem: darkMode 
-            ? 'text-gray-400 hover:bg-gray-800 hover:text-white' 
-            : 'text-slate-500 hover:bg-gray-100 hover:text-indigo-600',
+            ? 'bg-slate-800 hover:bg-slate-700 text-gray-200 border border-slate-700 shadow-lg shadow-black/10 transform active:scale-[.98]' 
+            : 'bg-slate-100 hover:bg-slate-200 text-slate-700 border border-slate-200 transform active:scale-[.98]',
+        // Active Nav item is a distinct pill with subtle shadow
         navActive: 'bg-indigo-600 text-white shadow-md shadow-indigo-500/30',
+        navItem: darkMode 
+            ? 'text-gray-300 hover:bg-slate-800/50 hover:text-white' 
+            : 'text-slate-600 hover:bg-indigo-50 hover:text-indigo-700',
+        
         success: 'text-emerald-500',
         warning: 'text-amber-500',
         danger: 'text-rose-500'
@@ -123,7 +138,7 @@ export default function App() {
     useEffect(() => {
         if (Object.keys(firebaseConfig).length === 0) { setError("Config missing."); return; }
         try {
-            const app = initializeApp(firebaseConfig);
+            const app = getApps().length === 0 ? initializeApp(firebaseConfig) : getApp();
             setDb(getFirestore(app));
             setAuth(getAuth(app));
         } catch (e) { setError(`Init Failed: ${e.message}`); }
@@ -240,24 +255,29 @@ export default function App() {
     };
 
     const updateReport = async (report, resources, files, status = "Draft") => {
-        if (status === 'Submitted' && !window.confirm("Are you sure you want to submit?")) return;
+        const isConfirmed = status !== 'Submitted' || window.confirm("Are you sure you want to submit the final report? It will be locked for editing.");
+        if (status === 'Submitted' && !isConfirmed) return;
         await updateDoc(doc(db, 'artifacts', appId, 'public', 'data', 'projects', userTeam.id), { report, resources, files, reportStatus: status });
         alertUser('success', status === 'Submitted' ? 'Submitted Successfully!' : 'Draft Saved');
     };
 
     const deleteProj = async (id) => {
-        if (window.confirm("Delete project?")) {
+        if (window.confirm("Are you sure you want to permanently delete this project?")) {
             await deleteDoc(doc(db, 'artifacts', appId, 'public', 'data', 'projects', id));
-            alertUser('success', 'Deleted');
+            alertUser('success', 'Project Deleted');
         }
     };
 
     const alertUser = (type, msg) => {
         const el = document.getElementById('toast');
         if (el) {
-            el.innerHTML = `<div class="px-4 py-3 rounded-lg shadow-lg flex items-center space-x-3 ${type === 'success' ? 'bg-emerald-500' : 'bg-rose-500'} text-white"><span class="font-medium">${msg}</span></div>`;
+            el.innerHTML = `<div class="px-4 py-3 rounded-xl shadow-2xl flex items-center space-x-3 ${type === 'success' ? 'bg-emerald-500' : 'bg-rose-500'} text-white"><span class="font-medium">${msg}</span></div>`;
             el.classList.remove('translate-y-20', 'opacity-0');
-            setTimeout(() => el.classList.add('translate-y-20', 'opacity-0'), 3000);
+            el.classList.add('translate-y-0', 'opacity-100');
+            setTimeout(() => {
+                el.classList.remove('translate-y-0', 'opacity-100');
+                el.classList.add('translate-y-20', 'opacity-0');
+            }, 3000);
         }
     };
 
@@ -267,13 +287,15 @@ export default function App() {
 
     // --- UI Components ---
     const Card = ({ children, className = "" }) => (
-        <div className={`${theme.card} rounded-2xl p-6 transition-all duration-300 hover:-translate-y-1 ${className}`}>{children}</div>
+        // Enhanced Card: More rounded corners (3xl) and a more defined hover effect
+        <div className={`${theme.card} rounded-3xl p-6 transition-all duration-300 ${className}`}>{children}</div>
     );
 
     const Button = ({ children, variant = "primary", onClick, className = "", ...props }) => (
         <button 
             onClick={onClick} 
-            className={`px-4 py-2.5 rounded-xl font-medium transition-all duration-200 flex items-center justify-center space-x-2 disabled:opacity-50 disabled:cursor-not-allowed ${variant === 'primary' ? theme.accentPrimary : theme.accentSecondary} ${className}`} 
+            // Slightly increased padding and stronger focus ring
+            className={`px-6 py-3 rounded-xl font-semibold transition-all duration-300 flex items-center justify-center space-x-2 disabled:opacity-50 disabled:cursor-not-allowed ${variant === 'primary' ? theme.accentPrimary : theme.accentSecondary} ${className}`} 
             {...props}
         >
             {children}
@@ -281,8 +303,38 @@ export default function App() {
     );
 
     const Input = (props) => (
-        <input {...props} className={`w-full px-4 py-3 rounded-xl transition-all outline-none ${theme.input}`} />
+        // Sharper focus style and border color
+        <input {...props} className={`w-full px-4 py-3 rounded-xl transition-all outline-none border ${theme.input}`} />
     );
+    
+    const NavItem = ({ view, label, IconComponent }) => (
+        <button
+            onClick={() => { setCurrentView(view); setIsMobileMenuOpen(false); }}
+            className={`px-4 py-2 rounded-xl text-sm font-medium transition-all duration-200 flex items-center space-x-3 ${currentView === view ? theme.navActive : theme.navItem}`}
+        >
+            <IconComponent className="w-5 h-5 flex-shrink-0" />
+            <span className="truncate">{label}</span>
+        </button>
+    );
+    
+    const ThemeSwitch = () => (
+        <label htmlFor="theme-toggle" className="flex items-center cursor-pointer transition-colors duration-300">
+            <div className={`relative ${darkMode ? 'text-amber-400' : 'text-indigo-600'}`}>
+                <input 
+                    id="theme-toggle" 
+                    type="checkbox" 
+                    className="sr-only" 
+                    checked={!darkMode} 
+                    onChange={toggleTheme}
+                />
+                <div className={`block w-14 h-8 rounded-full ${darkMode ? 'bg-slate-800' : 'bg-slate-200'} shadow-inner`}></div>
+                <div className={`absolute left-1 top-1 w-6 h-6 rounded-full transition-all duration-300 flex items-center justify-center transform ${!darkMode ? 'translate-x-full bg-white shadow-md' : 'translate-x-0 bg-slate-600 shadow-md'}`}>
+                    {darkMode ? <MoonIcon className="w-4 h-4 text-slate-200" /> : <SunIcon className="w-4 h-4 text-yellow-500" />}
+                </div>
+            </div>
+        </label>
+    );
+
 
     // --- Views ---
     const ProfileView = () => {
@@ -316,6 +368,7 @@ export default function App() {
                     const profileUpdates = {
                         displayName: formData.displayName
                     };
+                    // Only update profile if photoURL is a standard URL (not Base64 data)
                     if (formData.photoURL && !formData.photoURL.startsWith('data:')) {
                          profileUpdates.photoURL = formData.photoURL;
                     }
@@ -343,26 +396,34 @@ export default function App() {
 
         return (
             <div className="max-w-4xl mx-auto">
-                <Card className="overflow-hidden">
-                    <div className="relative h-32 bg-gradient-to-r from-indigo-500 to-purple-600 rounded-t-xl mb-12">
-                        <div className="absolute -bottom-10 left-8">
+                <h1 className={`text-3xl font-bold mb-8 ${theme.heading}`}>User Profile Settings</h1>
+                <Card className="overflow-hidden !p-0">
+                    {/* Header Banner */}
+                    <div className="relative h-40 bg-gradient-to-tr from-indigo-700 to-purple-800 rounded-t-3xl mb-16 shadow-inner">
+                        <div className="absolute -bottom-12 left-8">
                             <div className="relative group">
-                                <div className={`w-24 h-24 rounded-full border-4 ${darkMode ? 'border-gray-800' : 'border-white'} overflow-hidden bg-gray-200 flex items-center justify-center`}>
+                                <div className={`w-28 h-28 rounded-full border-4 ${darkMode ? 'border-gray-950' : 'border-white'} overflow-hidden bg-gray-200 flex items-center justify-center shadow-xl`}>
                                     {formData.photoURL ? (
                                         <img src={formData.photoURL} alt="Profile" className="w-full h-full object-cover" />
                                     ) : (
-                                        <span className="text-3xl font-bold text-gray-400">{formData.displayName?.charAt(0)}</span>
+                                        <span className="text-4xl font-bold text-gray-400">{formData.displayName?.charAt(0)}</span>
                                     )}
                                 </div>
-                                <label htmlFor="pic-upload" className="absolute bottom-0 right-0 bg-indigo-600 p-2 rounded-full text-white cursor-pointer shadow-lg hover:bg-indigo-700 transition-colors">
-                                    <CameraIcon className="w-4 h-4" />
+                                {/* Image upload overlay */}
+                                <label htmlFor="pic-upload" className="absolute bottom-0 right-0 bg-indigo-600 p-3 rounded-full text-white cursor-pointer shadow-lg hover:bg-indigo-700 transition-colors transform translate-y-1 translate-x-1">
+                                    <CameraIcon className="w-5 h-5" />
                                     <input type="file" id="pic-upload" className="hidden" accept="image/*" onChange={handleImageUpload} />
                                 </label>
                             </div>
                         </div>
                     </div>
                     
-                    <div className="px-8 pb-8 space-y-6">
+                    <div className="px-8 pb-8 space-y-8">
+                         <div className="pt-4">
+                            <h2 className={`text-2xl font-bold ${theme.heading}`}>{formData.displayName}</h2>
+                            <p className={`text-indigo-500 font-medium`}>{formData.title}</p>
+                        </div>
+
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                             <div className="space-y-2">
                                 <label className={`text-sm font-medium ${theme.textSecondary}`}>Full Name</label>
@@ -378,14 +439,18 @@ export default function App() {
                                     value={formData.bio} 
                                     onChange={e => setFormData({...formData, bio: e.target.value})} 
                                     rows="4" 
-                                    className={`w-full p-4 rounded-xl outline-none ${theme.input}`} 
+                                    className={`w-full p-4 rounded-xl outline-none border ${theme.input}`} 
                                     placeholder="Tell us about yourself..."
                                 />
+                            </div>
+                            <div className="md:col-span-2 space-y-2">
+                                <label className={`text-sm font-medium ${theme.textSecondary}`}>Email (Read-Only)</label>
+                                <Input value={userEmail || 'N/A (Guest User)'} readOnly disabled />
                             </div>
                         </div>
                         <div className="flex justify-end">
                             <Button onClick={saveProfile} disabled={loading}>
-                                {loading ? 'Saving...' : 'Save Changes'}
+                                {loading ? 'Saving...' : <><SaveIcon className="w-5 h-5"/> Save Changes</>}
                             </Button>
                         </div>
                     </div>
@@ -398,32 +463,32 @@ export default function App() {
         const [creds, setCreds] = useState({ email: '', pass: '' });
         return (
             <div className={`min-h-screen flex items-center justify-center p-4 ${theme.appBg} transition-colors duration-500`}>
-                <Card className="w-full max-w-md space-y-8 !p-10">
+                <Card className="w-full max-w-md space-y-8 !p-12">
                     <div className="text-center">
-                        <div className="w-16 h-16 bg-indigo-600 rounded-2xl mx-auto flex items-center justify-center mb-4 shadow-xl shadow-indigo-500/30">
+                        <div className="w-16 h-16 bg-gradient-to-r from-indigo-600 to-purple-600 rounded-2xl mx-auto flex items-center justify-center mb-4 shadow-xl shadow-indigo-500/30">
                             <TeamIcon className="w-8 h-8 text-white" />
                         </div>
-                        <h1 className={`text-3xl font-bold ${theme.heading}`}>Welcome Back</h1>
-                        <p className={`mt-2 ${theme.textSecondary}`}>Academic Project Management</p>
+                        <h1 className={`text-3xl font-extrabold ${theme.heading}`}>ProTrack.ai</h1>
+                        <p className={`mt-2 ${theme.textSecondary}`}>Academic Project Management Suite</p>
                     </div>
 
                     {authView === AUTH_VIEWS.INIT ? (
-                        <div className="space-y-3">
-                            <Button onClick={() => setAuthView(AUTH_VIEWS.LOGIN)} className="w-full">Sign In with Email</Button>
-                            <Button variant="secondary" onClick={() => handleAction('google')} className="w-full"><GoogleIcon className="w-5 h-5 mr-2" /> Google Sign In</Button>
-                            <div className={`relative py-2 flex items-center`}>
+                        <div className="space-y-4">
+                            <Button onClick={() => setAuthView(AUTH_VIEWS.LOGIN)} className="w-full text-lg shadow-2xl shadow-indigo-500/30">Sign In with Email</Button>
+                            <Button variant="secondary" onClick={() => handleAction('google')} className="w-full text-lg"><GoogleIcon className="w-5 h-5 mr-2" /> Google Sign In</Button>
+                            <div className={`relative py-3 flex items-center`}>
                                 <div className={`flex-grow border-t ${darkMode ? 'border-gray-700' : 'border-gray-200'}`}></div>
-                                <span className={`flex-shrink-0 mx-4 text-xs uppercase ${theme.textSecondary}`}>Or continue as</span>
+                                <span className={`flex-shrink-0 mx-4 text-xs uppercase ${theme.textSecondary}`}>OR</span>
                                 <div className={`flex-grow border-t ${darkMode ? 'border-gray-700' : 'border-gray-200'}`}></div>
                             </div>
-                            <Button variant="secondary" onClick={() => handleAction('anon')} className="w-full">Guest Student</Button>
+                            <Button variant="secondary" onClick={() => handleAction('anon')} className="w-full text-lg">Continue as Guest</Button>
                         </div>
                     ) : (
-                        <form onSubmit={(e) => { e.preventDefault(); handleAction(authView === AUTH_VIEWS.LOGIN ? 'login' : 'signup', creds.email, creds.pass); }} className="space-y-4">
+                        <form onSubmit={(e) => { e.preventDefault(); handleAction(authView === AUTH_VIEWS.LOGIN ? 'login' : 'signup', creds.email, creds.pass); }} className="space-y-6">
                             <Input type="email" placeholder="Email Address" value={creds.email} onChange={e => setCreds({...creds, email: e.target.value})} required />
                             <Input type="password" placeholder="Password" value={creds.pass} onChange={e => setCreds({...creds, pass: e.target.value})} required />
                             <Button className="w-full">{authView === AUTH_VIEWS.LOGIN ? 'Login' : 'Create Account'}</Button>
-                            <p className={`text-center text-sm ${theme.textSecondary} cursor-pointer hover:${theme.textPrimary}`} onClick={() => setAuthView(authView === AUTH_VIEWS.LOGIN ? AUTH_VIEWS.SIGNUP : AUTH_VIEWS.LOGIN)}>
+                            <p className={`text-center text-sm ${theme.textSecondary} cursor-pointer hover:text-indigo-500 transition-colors`} onClick={() => setAuthView(authView === AUTH_VIEWS.LOGIN ? AUTH_VIEWS.SIGNUP : AUTH_VIEWS.LOGIN)}>
                                 {authView === AUTH_VIEWS.LOGIN ? "New here? Create account" : "Already have an account? Login"}
                             </p>
                         </form>
@@ -437,8 +502,8 @@ export default function App() {
         const [form, setForm] = useState({ team: '', project: '' });
         const [memberEmails, setMemberEmails] = useState(['']);
 
-        if (userTeam) return <div className={`text-center p-10 ${theme.textSecondary}`}>You are already in a team: <span className={theme.heading}>{userTeam.teamName}</span></div>;
-        if (!userEmail) return <div className={`text-center p-10 ${theme.textSecondary}`}>Please login with an email to create a team and invite members.</div>;
+        if (userTeam) return <div className={`text-center p-10 ${theme.textSecondary}`}>You are already registered for the project: <span className="font-semibold text-indigo-500">{userTeam.name}</span></div>;
+        if (!userEmail) return <div className={`text-center p-10 ${theme.textSecondary}`}>Please sign in with an email to create a team and invite members.</div>;
         
         const addEmailField = () => setMemberEmails([...memberEmails, '']);
         const updateEmail = (index, value) => {
@@ -455,41 +520,45 @@ export default function App() {
         return (
             <div className="max-w-2xl mx-auto">
                 <Card>
-                    <h2 className={`text-2xl font-bold ${theme.heading} mb-6`}>Register New Project</h2>
-                    <div className="space-y-5">
+                    <h2 className={`text-3xl font-bold ${theme.heading} mb-6`}>Start a New Project</h2>
+                    <p className={`mb-8 ${theme.textSecondary}`}>Define your team and project scope to begin tracking progress.</p>
+                    <div className="space-y-6">
                         <div>
                             <label className={`block text-sm font-medium mb-2 ${theme.textSecondary}`}>Team Name</label>
                             <Input value={form.team} onChange={e => setForm({...form, team: e.target.value})} placeholder="e.g. Alpha Squad" />
                         </div>
                         <div>
                             <label className={`block text-sm font-medium mb-2 ${theme.textSecondary}`}>Project Title</label>
-                            <Input value={form.project} onChange={e => setForm({...form, project: e.target.value})} placeholder="e.g. AI Traffic Control" />
+                            <Input value={form.project} onChange={e => setForm({...form, project: e.target.value})} placeholder="e.g. AI Traffic Control Simulation" />
                         </div>
                         
                         <div>
                             <label className={`block text-sm font-medium mb-2 ${theme.textSecondary}`}>Invite Members (Emails)</label>
-                            <div className="space-y-2">
+                            <div className="space-y-3">
                                 {memberEmails.map((email, index) => (
-                                    <div key={index} className="flex gap-2">
+                                    <div key={index} className="flex gap-2 items-center">
                                         <Input 
+                                            type="email"
                                             value={email} 
                                             onChange={e => updateEmail(index, e.target.value)} 
-                                            placeholder={`Member ${index + 1} Email`} 
+                                            placeholder={`Member ${index + 1} Email (Required)`} 
                                         />
                                         {memberEmails.length > 1 && (
-                                            <button onClick={() => removeEmail(index)} className="p-3 text-rose-500 hover:bg-rose-50 dark:hover:bg-rose-900/20 rounded-xl">
+                                            <button onClick={() => removeEmail(index)} className="p-3 text-rose-500 hover:bg-rose-50 dark:hover:bg-rose-900/20 rounded-xl transition-colors">
                                                 <TrashIcon className="w-5 h-5" />
                                             </button>
                                         )}
                                     </div>
                                 ))}
                             </div>
-                            <button onClick={addEmailField} className={`mt-2 text-sm font-medium ${theme.accentText} flex items-center gap-1 hover:underline`}>
+                            <Button variant="secondary" onClick={addEmailField} className={`mt-4 text-sm font-medium flex items-center gap-1`}>
                                 <PlusIcon className="w-4 h-4" /> Add another member
-                            </button>
+                            </Button>
                         </div>
 
-                        <Button onClick={() => registerTeam(form.team, form.project, memberEmails.filter(x => x.trim()))} className="w-full">Send Proposals & Create</Button>
+                        <Button onClick={() => registerTeam(form.team, form.project, memberEmails.filter(x => x.trim()))} className="w-full mt-8">
+                            <SendIcon className="w-5 h-5"/> Send Proposals & Create Project
+                        </Button>
                     </div>
                 </Card>
             </div>
@@ -497,12 +566,17 @@ export default function App() {
     };
 
     const ProjectRequiredMessage = ({ viewName }) => {
-        if (!userTeam) return <div className={`text-center ${theme.textSecondary} p-12`}>Please register a team first.</div>;
+        if (!userTeam) return <div className={`text-center ${theme.textSecondary} p-12`}>
+             <DatabaseIcon className="w-12 h-12 mx-auto mb-4 text-indigo-500" />
+            <p className="text-lg font-medium">You need an active project to access {viewName}.</p>
+            <Button onClick={() => setCurrentView(VIEWS.REGISTRATION)} className="mt-4">Register Project Now</Button>
+        </div>;
         if (!isTeamActive) return (
             <div className={`text-center p-12`}>
                 <div className="w-16 h-16 bg-amber-100 text-amber-600 rounded-full flex items-center justify-center mx-auto mb-4"><ClockIcon className="w-8 h-8"/></div>
                 <h3 className={`text-xl font-bold ${theme.heading}`}>Team Formation In Progress</h3>
                 <p className={`mt-2 ${theme.textSecondary}`}>All members must accept the project proposal before you can access {viewName}.</p>
+                <p className={`mt-4 text-sm font-medium ${theme.textPrimary}`}>Project: {userTeam.name}</p>
             </div>
         );
         return null;
@@ -512,22 +586,25 @@ export default function App() {
         if (!userTeam || !isTeamActive) return <ProjectRequiredMessage viewName={VIEWS.TRACKING} />;
         
         const isLead = userTeam.members.find(m => m.id === userId)?.role === 'Lead';
-        const [newTask, setNewTask] = useState({ title: '', assigneeId: userTeam.members[0]?.id, date: '' });
+        const [newTask, setNewTask] = useState({ title: '', assigneeId: userTeam.members.find(m => m.id === userId)?.id || userTeam.members[0]?.id, date: '' });
         
         const addTask = async () => {
             if (!newTask.title || !newTask.date) return alertUser('error', 'Please fill in all task details');
             const assignee = userTeam.members.find(m => m.id === newTask.assigneeId) || userTeam.members[0];
+            if (!assignee) return alertUser('error', 'Could not find assignee.');
+            
             const task = {
                 id: crypto.randomUUID(),
                 title: newTask.title,
                 assigneeId: assignee.id,
                 assigneeName: assignee.name,
                 dueDate: newTask.date,
-                completed: false
+                completed: false,
+                createdAt: new Date().toISOString()
             };
             const updatedTasks = [...(userTeam.tasks || []), task];
             await updateDoc(doc(db, 'artifacts', appId, 'public', 'data', 'projects', userTeam.id), { tasks: updatedTasks });
-            setNewTask({ title: '', assigneeId: userTeam.members[0]?.id, date: '' });
+            setNewTask({ title: '', assigneeId: userId, date: '' });
             alertUser('success', 'Task assigned');
         };
 
@@ -543,69 +620,82 @@ export default function App() {
         };
 
         const deleteTask = async (taskId) => {
-             if (!isLead) return;
+             if (!isLead) return alertUser('error', 'Only the Team Lead can delete tasks.');
              const updatedTasks = (userTeam.tasks || []).filter(t => t.id !== taskId);
              await updateDoc(doc(db, 'artifacts', appId, 'public', 'data', 'projects', userTeam.id), { tasks: updatedTasks });
+             alertUser('success', 'Task deleted.');
         };
 
         const tasks = userTeam.tasks || [];
         const completedCount = tasks.filter(t => t.completed).length;
         const progress = tasks.length > 0 ? Math.round((completedCount / tasks.length) * 100) : 0;
+        
+        const sortedTasks = [...tasks].sort((a, b) => new Date(a.dueDate) - new Date(b.dueDate));
 
         return (
-            <div className="max-w-4xl mx-auto space-y-8">
+            <div className="max-w-5xl mx-auto space-y-8">
+                <h1 className={`text-4xl font-extrabold ${theme.heading}`}>Progress Tracking</h1>
+                <h2 className={`text-xl font-bold ${theme.heading} text-indigo-500`}>{userTeam.name}</h2>
+
                 <Card>
                     <div className="flex justify-between items-center mb-6">
-                        <h3 className={`text-xl font-bold ${theme.heading}`}>Project Tasks</h3>
-                        <span className={`text-sm font-mono ${theme.textSecondary}`}>{completedCount}/{tasks.length} Completed</span>
+                        <h3 className={`text-xl font-bold ${theme.heading}`}>Project Progress Overview</h3>
+                        <span className={`text-sm font-mono px-3 py-1 rounded-full ${darkMode ? 'bg-indigo-900/40 text-indigo-300' : 'bg-indigo-100 text-indigo-600'}`}>{progress}% Complete</span>
                     </div>
-                    <div className="w-full h-2 bg-gray-200 dark:bg-gray-700 rounded-full overflow-hidden mb-8">
-                         <div className="h-full bg-indigo-600 transition-all duration-500" style={{ width: `${progress}%` }}></div>
+                    <div className="w-full h-3 bg-gray-200 dark:bg-gray-700 rounded-full overflow-hidden shadow-inner">
+                         <div className="h-full bg-gradient-to-r from-indigo-500 to-purple-500 transition-all duration-700" style={{ width: `${progress}%` }}></div>
                     </div>
+                    <p className={`mt-3 text-sm ${theme.textSecondary}`}>{completedCount} out of {tasks.length} tasks completed.</p>
+                </Card>
 
-                    {isLead && (
-                        <div className={`p-4 rounded-xl mb-6 ${darkMode ? 'bg-gray-800/50 border border-gray-700' : 'bg-gray-50 border border-gray-200'}`}>
-                            <h4 className={`text-sm font-bold mb-3 ${theme.heading}`}>Assign New Task</h4>
-                            <div className="grid grid-cols-1 md:grid-cols-4 gap-3">
-                                <div className="md:col-span-2">
-                                    <Input placeholder="Task Description" value={newTask.title} onChange={e => setNewTask({...newTask, title: e.target.value})} />
-                                </div>
-                                <select className={`w-full px-4 py-3 rounded-xl outline-none ${theme.input}`} value={newTask.assigneeId} onChange={e => setNewTask({...newTask, assigneeId: e.target.value})}>
-                                    {userTeam.members.map(m => <option key={m.id} value={m.id}>{m.name}</option>)}
-                                </select>
-                                <Input type="date" value={newTask.date} onChange={e => setNewTask({...newTask, date: e.target.value})} />
+                {isLead && (
+                    <Card>
+                        <h4 className={`text-xl font-bold mb-4 ${theme.heading} flex items-center`}><PlusIcon className="w-5 h-5 mr-2 text-indigo-500"/> Assign New Task</h4>
+                        <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+                            <div className="md:col-span-2">
+                                <Input placeholder="Task Description" value={newTask.title} onChange={e => setNewTask({...newTask, title: e.target.value})} />
                             </div>
-                            <Button onClick={addTask} className="w-full mt-3">Assign Task</Button>
+                            <select className={`w-full px-4 py-3 rounded-xl outline-none border ${theme.input}`} value={newTask.assigneeId} onChange={e => setNewTask({...newTask, assigneeId: e.target.value})}>
+                                {userTeam.members.map(m => <option key={m.id} value={m.id}>{m.name}</option>)}
+                            </select>
+                            <Input type="date" value={newTask.date} onChange={e => setNewTask({...newTask, date: e.target.value})} />
                         </div>
-                    )}
+                        <Button onClick={addTask} className="w-full mt-4">Assign Task</Button>
+                    </Card>
+                )}
 
-                    <div className="space-y-3">
+                <Card>
+                    <h3 className={`text-xl font-bold ${theme.heading} mb-6`}>All Tasks</h3>
+                    <div className="space-y-4">
                         {tasks.length === 0 ? (
-                            <p className={`text-center py-8 ${theme.textSecondary}`}>No tasks assigned yet.</p>
+                            <p className={`text-center py-8 ${theme.textSecondary}`}>No tasks assigned yet. Time to get started!</p>
                         ) : (
-                            tasks.map(t => (
-                                <div key={t.id} className={`flex items-center justify-between p-4 rounded-xl border transition-all ${t.completed ? (darkMode ? 'bg-emerald-900/10 border-emerald-900/30' : 'bg-emerald-50 border-emerald-200') : (darkMode ? 'bg-gray-900/50 border-gray-700' : 'bg-white border-gray-100 shadow-sm')}`}>
+                            sortedTasks.map(t => (
+                                <div key={t.id} className={`flex items-center justify-between p-4 rounded-xl border transition-all duration-300 ${t.completed ? (darkMode ? 'bg-emerald-900/10 border-emerald-900/30 opacity-70' : 'bg-emerald-50 border-emerald-200 opacity-70') : (darkMode ? 'bg-gray-900/50 border-gray-700 hover:border-indigo-500' : 'bg-white border-gray-100 shadow-sm hover:shadow-md')}`}>
                                     <div className="flex items-center gap-4 overflow-hidden">
                                         <button 
                                             onClick={() => toggleTask(t.id, t.completed, t.assigneeId)}
-                                            className={`w-6 h-6 rounded-full border-2 flex items-center justify-center transition-colors ${
-                                                t.completed ? 'bg-emerald-500 border-emerald-500 text-white' : 'border-gray-400 text-transparent hover:border-emerald-500'
+                                            className={`w-6 h-6 rounded-full border-2 flex items-center justify-center transition-colors flex-shrink-0 ${
+                                                t.completed ? 'bg-emerald-500 border-emerald-500 text-white' : 'border-gray-400 text-transparent hover:border-indigo-500 hover:bg-indigo-500/10'
                                             } ${(!isLead && userId !== t.assigneeId) ? 'opacity-50 cursor-not-allowed' : ''}`}
+                                            disabled={!isLead && userId !== t.assigneeId}
                                         >
                                             <CheckCircleIcon className="w-4 h-4" />
                                         </button>
                                         <div className="min-w-0">
-                                            <p className={`font-medium truncate ${t.completed ? 'line-through opacity-50' : ''} ${theme.textPrimary}`}>{t.title}</p>
-                                            <div className="flex items-center gap-2 mt-1">
-                                                <div className="flex items-center gap-1 bg-gray-100 dark:bg-gray-800 px-2 py-0.5 rounded-md">
+                                            <p className={`font-medium truncate ${t.completed ? 'line-through opacity-70' : ''} ${theme.textPrimary}`}>{t.title}</p>
+                                            <div className="flex items-center gap-3 mt-1 text-xs">
+                                                <div className="flex items-center gap-1 px-2 py-0.5 rounded-full bg-gray-100 dark:bg-gray-800">
                                                     <div className="w-4 h-4 rounded-full bg-indigo-500 flex items-center justify-center text-[8px] text-white font-bold">{t.assigneeName?.charAt(0)}</div>
-                                                    <span className={`text-xs ${theme.textSecondary}`}>{t.assigneeName}</span>
+                                                    <span className={`${theme.textSecondary}`}>{t.assigneeName}</span>
                                                 </div>
-                                                <span className={`text-xs ${theme.textSecondary}`}>Due: {t.dueDate}</span>
+                                                <span className={`${theme.textSecondary} flex items-center gap-1`}>
+                                                    <ClockIcon className="w-3 h-3"/> Due: {t.dueDate}
+                                                </span>
                                             </div>
                                         </div>
                                     </div>
-                                    {isLead && <button onClick={() => deleteTask(t.id)} className="text-gray-400 hover:text-rose-500 p-2"><TrashIcon className="w-4 h-4" /></button>}
+                                    {isLead && <button onClick={() => deleteTask(t.id)} className="text-gray-400 hover:text-rose-500 p-2 flex-shrink-0 transition-colors"><TrashIcon className="w-4 h-4" /></button>}
                                 </div>
                             ))
                         )}
@@ -635,123 +725,238 @@ export default function App() {
 
         const handleFileUpload = (e) => {
             if (isSubmitted) return;
-            const newFiles = Array.from(e.target.files).map(f => ({ name: f.name, size: (f.size/1024).toFixed(2)+' KB', date: new Date().toLocaleDateString(), url: "#" })); // Simulated URL for demo
+            // NOTE: File upload is simulated. In a real application, you'd upload to Firebase Storage here and get the URL.
+            const newFiles = Array.from(e.target.files).map(f => ({ name: f.name, size: (f.size/1024).toFixed(2)+' KB', date: new Date().toLocaleDateString(), url: "#" })); 
             const updatedFiles = [...files, ...newFiles];
             setFiles(updatedFiles);
             // Auto-save files to allow real-time sync
             updateReport(content, resources, updatedFiles, 'Draft');
+            alertUser('info', 'File metadata saved (simulated upload)');
         };
 
         const addResource = () => {
-            if(linkInput && !isSubmitted) { 
+            if(linkInput && !isSubmitted && (linkInput.startsWith('http://') || linkInput.startsWith('https://'))) { 
                 const newResources = [...resources, { url: linkInput, type: 'link' }];
                 setResources(newResources);
                 setLinkInput('');
                 updateReport(content, newResources, files, 'Draft');
+            } else if (!isSubmitted) {
+                alertUser('error', 'Please enter a valid URL (starting with http/https).');
             }
         };
 
         return (
-            <div className="max-w-5xl mx-auto space-y-8">
+            <div className="max-w-6xl mx-auto space-y-8">
                 <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
-                    <div><h2 className={`text-3xl font-bold ${theme.heading}`}>Final Submission</h2><p className={`${theme.textSecondary}`}>Upload documents and links.</p></div>
-                    <div className={`px-4 py-1.5 rounded-full text-sm font-bold ${isSubmitted ? 'bg-emerald-100 text-emerald-700' : 'bg-amber-100 text-amber-700'}`}>Status: {reportStatus}</div>
+                    <div>
+                        <h1 className={`text-4xl font-extrabold ${theme.heading}`}>Report Submission</h1>
+                        <p className={`${theme.textSecondary}`}>Project: <span className="text-indigo-500 font-medium">{userTeam.name}</span></p>
+                    </div>
+                    <div className={`px-4 py-2 rounded-full text-sm font-bold shadow-md ${isSubmitted ? 'bg-emerald-100 text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-300' : 'bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-300'}`}>Status: {reportStatus}</div>
                 </div>
+
                 <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
                     <Card className="lg:col-span-2 space-y-4">
-                        <h3 className={`text-xl font-bold ${theme.heading}`}>Executive Summary</h3>
-                        <textarea value={content} onChange={e => setContent(e.target.value)} rows="16" disabled={isSubmitted} className={`w-full p-5 rounded-xl outline-none resize-y font-mono text-sm leading-relaxed ${theme.input} ${isSubmitted ? 'opacity-70 cursor-not-allowed' : ''}`} placeholder="# Project Abstract..." />
+                        <h3 className={`text-xl font-bold ${theme.heading}`}>Executive Summary / Abstract</h3>
+                        <textarea 
+                            value={content} 
+                            onChange={e => setContent(e.target.value)} 
+                            rows="18" 
+                            disabled={isSubmitted} 
+                            className={`w-full p-5 rounded-2xl outline-none resize-y font-mono text-sm leading-relaxed ${theme.input} ${isSubmitted ? 'opacity-70 cursor-not-allowed' : ''}`} 
+                            placeholder="Use Markdown to structure your report abstract. Include your methodology, results, and conclusion here..." 
+                        />
                     </Card>
                     <div className="space-y-6">
                         <Card>
-                            <h3 className={`text-lg font-bold ${theme.heading} mb-4 flex items-center`}><FileIcon className="w-5 h-5 mr-2"/> Files</h3>
-                            {!isSubmitted && <div className={`border-2 border-dashed rounded-xl p-6 text-center cursor-pointer transition-colors mb-4 ${darkMode ? 'border-gray-700 hover:border-indigo-500' : 'border-gray-300 hover:border-indigo-500'}`}><input type="file" multiple onChange={handleFileUpload} className="hidden" id="file-upload" /><label htmlFor="file-upload" className="cursor-pointer block"><div className="mx-auto w-10 h-10 bg-indigo-100 text-indigo-600 rounded-full flex items-center justify-center mb-2"><PlusIcon className="w-5 h-5"/></div><p className={`text-xs font-medium ${theme.textPrimary}`}>Upload</p></label></div>}
+                            <h3 className={`text-lg font-bold ${theme.heading} mb-4 flex items-center`}><FileIcon className="w-5 h-5 mr-2 text-indigo-500"/> Supporting Files</h3>
+                            <p className={`text-xs ${theme.textSecondary} mb-4`}>Simulated file upload for document metadata.</p>
+                            {!isSubmitted && (
+                                <div className={`border-2 border-dashed rounded-xl p-6 text-center cursor-pointer transition-colors mb-4 ${darkMode ? 'border-gray-700 hover:border-indigo-500 bg-gray-800/20' : 'border-gray-300 hover:border-indigo-500 bg-gray-50'}`}>
+                                    <input type="file" multiple onChange={handleFileUpload} className="hidden" id="file-upload" />
+                                    <label htmlFor="file-upload" className="cursor-pointer block">
+                                        <div className="mx-auto w-10 h-10 bg-indigo-100 text-indigo-600 rounded-full flex items-center justify-center mb-2 shadow-lg"><PlusIcon className="w-5 h-5"/></div>
+                                        <p className={`text-xs font-medium ${theme.textPrimary}`}>Click to Upload (Simulated)</p>
+                                    </label>
+                                </div>
+                            )}
                             <ul className="space-y-3 max-h-60 overflow-y-auto pr-2">{files.map((f, i) => (
-                                <li key={i} className={`flex items-center justify-between p-3 rounded-lg group ${darkMode ? 'bg-gray-900/50' : 'bg-gray-50 border border-gray-100'}`}>
+                                <li key={i} className={`flex items-center justify-between p-3 rounded-lg group ${darkMode ? 'bg-gray-800 hover:bg-gray-700' : 'bg-gray-50 border border-gray-100 hover:bg-gray-100'} transition-colors`}>
                                     <div className="overflow-hidden flex-1">
                                         <div className="flex items-center">
                                             <p className={`text-sm font-medium ${theme.textPrimary} truncate flex-1`}>{f.name}</p>
                                             {/* Dedicated Download Button for Team Members */}
-                                            <a href={f.url} target="_blank" rel="noopener noreferrer" className={`ml-2 p-1 rounded hover:bg-gray-200 dark:hover:bg-gray-700 text-indigo-500`} title="Download File">
+                                            <a href={f.url} target="_blank" rel="noopener noreferrer" className={`ml-2 p-1 rounded hover:bg-indigo-100 dark:hover:bg-indigo-900/30 text-indigo-500 transition-colors`} title="Download File">
                                                 <DownloadIcon className="w-4 h-4" />
                                             </a>
                                         </div>
-                                        <p className={`text-[10px] ${theme.textSecondary}`}>{f.size}</p>
+                                        <p className={`text-[10px] ${theme.textSecondary}`}>{f.size} | {f.date}</p>
                                     </div>
                                     {!isSubmitted && <button onClick={() => {
                                         const newFiles = files.filter((_, idx) => idx !== i);
                                         setFiles(newFiles);
                                         updateReport(content, resources, newFiles, 'Draft');
-                                    }} className="text-gray-400 hover:text-rose-500 opacity-0 group-hover:opacity-100 ml-2"><TrashIcon className="w-4 h-4"/></button>}
+                                    }} className="text-gray-400 hover:text-rose-500 ml-2"><TrashIcon className="w-4 h-4"/></button>}
                                 </li>
                             ))}</ul>
                         </Card>
                         <Card>
-                            <h3 className={`text-lg font-bold ${theme.heading} mb-4 flex items-center`}><LinkIcon className="w-5 h-5 mr-2"/> Links</h3>
-                            {!isSubmitted && <div className="flex space-x-2 mb-4"><input value={linkInput} onChange={e => setLinkInput(e.target.value)} placeholder="https://..." className={`flex-1 px-3 py-2 text-sm rounded-lg outline-none ${theme.input}`} /><button onClick={addResource} className={`p-2 rounded-lg ${theme.accentPrimary}`}><PlusIcon className="w-4 h-4"/></button></div>}
-                            <ul className="space-y-2">{resources.map((r, i) => (<li key={i} className={`flex items-center justify-between p-2 rounded-lg ${darkMode ? 'hover:bg-gray-800' : 'hover:bg-gray-50'}`}><a href={r.url} target="_blank" rel="noreferrer" className="text-blue-500 truncate hover:underline text-sm flex-1">{r.url}</a>{!isSubmitted && <button onClick={() => {
-                                const newRes = resources.filter((_, idx) => idx !== i);
-                                setResources(newRes);
-                                updateReport(content, newRes, files, 'Draft');
-                            }} className="text-gray-400 hover:text-rose-500 ml-2"><TrashIcon className="w-3 h-3"/></button>}</li>))}</ul>
+                            <h3 className={`text-lg font-bold ${theme.heading} mb-4 flex items-center`}><LinkIcon className="w-5 h-5 mr-2 text-purple-500"/> External Resources</h3>
+                            {!isSubmitted && (
+                                <div className="flex space-x-2 mb-4">
+                                    <Input value={linkInput} onChange={e => setLinkInput(e.target.value)} placeholder="https://repository-link.com" className="flex-1 text-sm" />
+                                    <Button onClick={addResource} className={`p-3 rounded-xl shadow-none`}><PlusIcon className="w-4 h-4"/></Button>
+                                </div>
+                            )}
+                            <ul className="space-y-3">{resources.map((r, i) => (
+                                <li key={i} className={`flex items-center justify-between p-2 rounded-lg ${darkMode ? 'hover:bg-gray-800' : 'hover:bg-gray-50'} transition-colors`}>
+                                    <a href={r.url} target="_blank" rel="noreferrer" className="text-blue-500 truncate hover:underline text-sm flex-1">{r.url}</a>
+                                    {!isSubmitted && <button onClick={() => {
+                                        const newRes = resources.filter((_, idx) => idx !== i);
+                                        setResources(newRes);
+                                        updateReport(content, newRes, files, 'Draft');
+                                    }} className="text-gray-400 hover:text-rose-500 ml-2"><TrashIcon className="w-3 h-3"/></button>}
+                                </li>
+                            ))}</ul>
                         </Card>
                     </div>
                 </div>
-                {!isSubmitted && <div className={`sticky bottom-0 p-4 ${theme.card} border-t backdrop-blur-lg rounded-xl flex justify-between items-center`}><p className={`text-sm ${theme.textSecondary}`}>Last saved: {new Date().toLocaleTimeString()}</p><div className="flex space-x-4"><Button variant="secondary" onClick={() => updateReport(content, resources, files, 'Draft')}><SaveIcon className="w-4 h-4 mr-2" /> Save Draft</Button><Button onClick={() => updateReport(content, resources, files, 'Submitted')}><SendIcon className="w-4 h-4 mr-2" /> Submit Final</Button></div></div>}
+                {/* Sticky Action Bar */}
+                {!isSubmitted && (
+                    <div className={`sticky bottom-0 p-5 mt-8 ${theme.card} border-t backdrop-blur-lg rounded-2xl flex justify-between items-center z-20`}>
+                        <p className={`text-sm ${theme.textSecondary}`}>Last saved: {new Date().toLocaleTimeString()}</p>
+                        <div className="flex space-x-4">
+                            <Button variant="secondary" onClick={() => updateReport(content, resources, files, 'Draft')}>
+                                <SaveIcon className="w-5 h-5 mr-2" /> Save Draft
+                            </Button>
+                            <Button onClick={() => updateReport(content, resources, files, 'Submitted')}>
+                                <SendIcon className="w-5 h-5 mr-2" /> Submit Final
+                            </Button>
+                        </div>
+                    </div>
+                )}
             </div>
         );
     };
 
     // New Admin Submission View Component
-    const AdminSubmissionView = ({ project, onBack }) => (
-        <div className="max-w-5xl mx-auto space-y-8">
-            <div className="flex items-center justify-between mb-4">
-                 <button onClick={onBack} className={`text-sm ${theme.accentText} hover:underline flex items-center`}><span className="mr-1">←</span> Back to List</button>
-                 <h2 className={`text-2xl font-bold ${theme.heading}`}>Reviewing: {project.name}</h2>
-            </div>
-            <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-                <Card className="lg:col-span-2 space-y-4">
-                    <h3 className={`text-xl font-bold ${theme.heading}`}>Executive Summary</h3>
-                    <div className={`w-full p-5 rounded-xl min-h-[300px] font-mono text-sm leading-relaxed whitespace-pre-wrap ${theme.input}`}>
-                        {project.report || "No report content submitted."}
+    const AdminSubmissionView = ({ project, onBack }) => {
+        const [evaluation, setEvaluation] = useState(project.evaluation || INITIAL_EVALUATION);
+        const [loading, setLoading] = useState(false);
+        const isCompleted = evaluation.status === 'Completed';
+
+        const saveEvaluation = async () => {
+            if (evaluation.score < 0 || evaluation.score > 100) {
+                return alertUser('error', 'Score must be between 0 and 100.');
+            }
+            if (!evaluation.feedback || evaluation.feedback.length < 10) {
+                return alertUser('error', 'Please provide meaningful feedback (min 10 characters).');
+            }
+
+            setLoading(true);
+            const status = evaluation.status === 'Completed' ? 'Completed' : 'Pending';
+            const updatedEvaluation = { ...evaluation, status };
+
+            await updateDoc(doc(db, 'artifacts', appId, 'public', 'data', 'projects', project.id), { evaluation: updatedEvaluation });
+            setEvaluation(updatedEvaluation);
+            alertUser('success', 'Evaluation saved successfully!');
+            setLoading(false);
+        };
+        
+        return (
+            <div className="max-w-6xl mx-auto space-y-8">
+                <div className="flex items-center justify-between mb-4">
+                     <button onClick={onBack} className={`text-base font-medium ${theme.textSecondary} hover:text-indigo-500 transition-colors flex items-center`}><span className="mr-2">←</span> Back to Projects</button>
+                     <h2 className={`text-3xl font-bold ${theme.heading}`}>Reviewing: <span className="text-indigo-500">{project.name}</span></h2>
+                </div>
+                
+                <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
+                    {/* Evaluation Panel */}
+                    <Card className="lg:col-span-1 space-y-6 h-fit sticky top-24">
+                        <h3 className={`text-xl font-bold ${theme.heading} border-b pb-3 ${darkMode ? 'border-gray-700' : 'border-gray-200'}`}>Grade Project</h3>
+                        <div className="space-y-4">
+                             <div className="space-y-2">
+                                <label className={`text-sm font-medium ${theme.textSecondary}`}>Score (0-100)</label>
+                                <Input 
+                                    type="number" 
+                                    min="0" max="100" 
+                                    value={evaluation.score} 
+                                    onChange={e => setEvaluation({...evaluation, score: parseInt(e.target.value) || 0})}
+                                />
+                            </div>
+                            <div className="space-y-2">
+                                <label className={`text-sm font-medium ${theme.textSecondary}`}>Overall Feedback</label>
+                                <textarea 
+                                    rows="6" 
+                                    value={evaluation.feedback} 
+                                    onChange={e => setEvaluation({...evaluation, feedback: e.target.value})} 
+                                    className={`w-full p-3 rounded-xl outline-none border ${theme.input}`} 
+                                    placeholder="Provide constructive feedback..."
+                                />
+                            </div>
+                            <div className="flex items-center space-x-3">
+                                <input 
+                                    type="checkbox" 
+                                    id="complete-check" 
+                                    checked={isCompleted} 
+                                    onChange={e => setEvaluation({...evaluation, status: e.target.checked ? 'Completed' : 'Pending'})}
+                                    className="w-4 h-4 text-indigo-600 border-gray-300 rounded focus:ring-indigo-500"
+                                />
+                                <label htmlFor="complete-check" className={`text-sm font-medium ${theme.textPrimary}`}>Mark as Complete</label>
+                            </div>
+                        </div>
+                        <Button onClick={saveEvaluation} disabled={loading} className="w-full">
+                            {loading ? 'Saving...' : <><SaveIcon className="w-5 h-5 mr-2"/> Save Evaluation</>}
+                        </Button>
+                    </Card>
+
+                    {/* Submission Content */}
+                    <div className="lg:col-span-3 space-y-8">
+                        <Card className="space-y-4">
+                            <h3 className={`text-2xl font-bold ${theme.heading} border-b pb-3 ${darkMode ? 'border-gray-700' : 'border-gray-200'}`}>Executive Summary</h3>
+                            <div className={`w-full p-5 rounded-xl min-h-[300px] font-mono text-sm leading-relaxed whitespace-pre-wrap ${theme.input} border`}>
+                                {project.report || "No report content submitted."}
+                            </div>
+                        </Card>
+                        
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <Card>
+                                <h3 className={`text-lg font-bold ${theme.heading} mb-4 flex items-center`}><FileIcon className="w-5 h-5 mr-2 text-indigo-500"/> Submitted Files</h3>
+                                <ul className="space-y-3">
+                                    {(project.files || []).map((f, i) => (
+                                        <li key={i} className={`flex items-center justify-between p-3 rounded-lg ${darkMode ? 'bg-gray-800' : 'bg-gray-50'}`}>
+                                            <div className="overflow-hidden flex-1">
+                                                <div className="flex items-center justify-between">
+                                                    <span className={`text-sm font-medium ${theme.textPrimary} truncate`}>{f.name}</span>
+                                                    {/* Explicit Download for Admin */}
+                                                    <a href={f.url} target="_blank" rel="noopener noreferrer" className="ml-2 p-1 text-indigo-500 hover:bg-indigo-100 dark:hover:bg-indigo-900/30 rounded" title="Download">
+                                                        <DownloadIcon className="w-4 h-4" />
+                                                    </a>
+                                                </div>
+                                                <p className={`text-[10px] ${theme.textSecondary}`}>{f.size} • {f.date}</p>
+                                            </div>
+                                        </li>
+                                    ))}
+                                    {(!project.files || project.files.length === 0) && <p className={`text-sm ${theme.textSecondary}`}>No files uploaded.</p>}
+                                </ul>
+                            </Card>
+                            <Card>
+                                <h3 className={`text-lg font-bold ${theme.heading} mb-4 flex items-center`}><LinkIcon className="w-5 h-5 mr-2 text-purple-500"/> External Links</h3>
+                                 <ul className="space-y-3">
+                                    {(project.resources || []).map((r, i) => (
+                                        <li key={i} className={`flex items-center justify-between p-2 rounded-lg ${darkMode ? 'hover:bg-gray-800' : 'hover:bg-gray-50'}`}>
+                                            <a href={r.url} target="_blank" rel="noreferrer" className="text-blue-500 truncate hover:underline text-sm flex-1">{r.url}</a>
+                                        </li>
+                                    ))}
+                                     {(!project.resources || project.resources.length === 0) && <p className={`text-sm ${theme.textSecondary}`}>No external links provided.</p>}
+                                </ul>
+                            </Card>
+                        </div>
                     </div>
-                </Card>
-                <div className="space-y-6">
-                    <Card>
-                        <h3 className={`text-lg font-bold ${theme.heading} mb-4 flex items-center`}><FileIcon className="w-5 h-5 mr-2"/> Submitted Files</h3>
-                        <ul className="space-y-3">
-                            {(project.files || []).map((f, i) => (
-                                <li key={i} className={`flex items-center justify-between p-3 rounded-lg ${darkMode ? 'bg-gray-900/50' : 'bg-gray-50 border border-gray-100'}`}>
-                                    <div className="overflow-hidden flex-1">
-                                        <div className="flex items-center justify-between">
-                                            <span className={`text-sm font-medium ${theme.textPrimary} truncate`}>{f.name}</span>
-                                            {/* Explicit Download for Admin */}
-                                            <a href={f.url} target="_blank" rel="noopener noreferrer" className="ml-2 p-1 text-indigo-500 hover:bg-indigo-100 rounded" title="Download">
-                                                <DownloadIcon className="w-4 h-4" />
-                                            </a>
-                                        </div>
-                                        <p className={`text-[10px] ${theme.textSecondary}`}>{f.size} • {f.date}</p>
-                                    </div>
-                                </li>
-                            ))}
-                            {(!project.files || project.files.length === 0) && <p className={`text-sm ${theme.textSecondary}`}>No files.</p>}
-                        </ul>
-                    </Card>
-                    <Card>
-                        <h3 className={`text-lg font-bold ${theme.heading} mb-4 flex items-center`}><LinkIcon className="w-5 h-5 mr-2"/> Links</h3>
-                         <ul className="space-y-2">
-                            {(project.resources || []).map((r, i) => (
-                                <li key={i} className={`flex items-center justify-between p-2 rounded-lg ${darkMode ? 'hover:bg-gray-800' : 'hover:bg-gray-50'}`}>
-                                    <a href={r.url} target="_blank" rel="noreferrer" className="text-blue-500 truncate hover:underline text-sm flex-1">{r.url}</a>
-                                </li>
-                            ))}
-                             {(!project.resources || project.resources.length === 0) && <p className={`text-sm ${theme.textSecondary}`}>No links.</p>}
-                        </ul>
-                    </Card>
                 </div>
             </div>
-        </div>
-    );
+        );
+    };
 
     const AdminPanel = () => {
         if (adminSelectedProject) {
@@ -759,28 +964,39 @@ export default function App() {
         }
         return (
             <Card>
-                <h2 className={`text-2xl font-bold ${theme.heading} mb-6 flex items-center`}><ShieldIcon className="w-6 h-6 mr-3 text-rose-500"/> Admin Console</h2>
+                <h1 className={`text-4xl font-bold ${theme.heading} mb-6 flex items-center`}><ShieldIcon className="w-8 h-8 mr-3 text-rose-500"/> Admin Console</h1>
                 <div className="overflow-x-auto">
                     <table className="w-full text-left">
                         <thead>
-                            <tr className={`border-b ${darkMode ? 'border-gray-700 text-gray-400' : 'border-gray-200 text-gray-500'} text-sm uppercase`}>
-                                <th className="pb-3 pl-2">Project</th>
-                                <th className="pb-3">Team</th>
-                                <th className="pb-3">Status</th>
-                                <th className="pb-3 text-right pr-2">Action</th>
+                            <tr className={`border-b ${darkMode ? 'border-gray-700 text-gray-300' : 'border-gray-200 text-gray-500'} text-sm uppercase`}>
+                                <th className="pb-3 pl-4">Project</th>
+                                <th className="pb-3 hidden sm:table-cell">Team</th>
+                                <th className="pb-3 hidden md:table-cell">Submission Status</th>
+                                <th className="pb-3">Evaluation</th>
+                                <th className="pb-3 text-right pr-4">Actions</th>
                             </tr>
                         </thead>
                         <tbody className={`text-sm ${theme.textPrimary}`}>
                             {projects.map(p => (
                                 <tr key={p.id} className={`border-b last:border-0 ${darkMode ? 'border-gray-800 hover:bg-gray-800/50' : 'border-gray-100 hover:bg-gray-50'} transition-colors`}>
-                                    <td className="py-4 pl-2 font-medium">{p.name}</td>
-                                    <td className={`py-4 ${theme.textSecondary}`}>{p.teamName}</td>
-                                    <td className="py-4"><span className={`px-2 py-1 rounded text-xs ${p.evaluation?.status === 'Completed' ? 'bg-emerald-100 text-emerald-700' : 'bg-amber-100 text-amber-700'}`}>{p.evaluation?.status || 'Pending'}</span></td>
-                                    <td className="py-4 text-right pr-2 flex justify-end space-x-2">
-                                        <button onClick={() => setAdminSelectedProject(p)} className="text-indigo-400 hover:text-indigo-300 hover:bg-indigo-900/20 p-2 rounded transition-colors" title="View Work">
+                                    <td className="py-4 pl-4 font-medium">{p.name}</td>
+                                    <td className={`py-4 hidden sm:table-cell ${theme.textSecondary}`}>{p.teamName}</td>
+                                    <td className="py-4 hidden md:table-cell">
+                                        <span className={`px-2 py-1 rounded-full text-xs font-semibold ${p.reportStatus === 'Submitted' ? 'bg-indigo-100 text-indigo-700 dark:bg-indigo-900/30 dark:text-indigo-300' : 'bg-gray-100 text-gray-700 dark:bg-gray-700 dark:text-gray-300'}`}>
+                                            {p.reportStatus || 'Draft'}
+                                        </span>
+                                    </td>
+                                    <td className="py-4">
+                                        <div className="flex items-center gap-2">
+                                            <span className={`px-2 py-1 rounded-full text-xs font-semibold ${p.evaluation?.status === 'Completed' ? 'bg-emerald-100 text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-300' : 'bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-300'}`}>{p.evaluation?.status || 'Pending'}</span>
+                                            {p.evaluation?.status === 'Completed' && <span className="font-bold text-indigo-500 text-sm">{p.evaluation.score}/100</span>}
+                                        </div>
+                                    </td>
+                                    <td className="py-4 text-right pr-4 flex justify-end space-x-2">
+                                        <button onClick={() => setAdminSelectedProject(p)} className="text-indigo-500 hover:text-white dark:hover:bg-indigo-600/50 hover:bg-indigo-100 p-2 rounded-xl transition-colors" title="View Submission & Grade">
                                             <EyeIcon className="w-4 h-4" />
                                         </button>
-                                        <button onClick={() => deleteProj(p.id)} className="text-rose-500 hover:text-rose-600 hover:bg-rose-50 dark:hover:bg-rose-900/20 p-2 rounded transition-colors"><TrashIcon className="w-4 h-4" /></button>
+                                        <button onClick={() => deleteProj(p.id)} className="text-rose-500 hover:text-white hover:bg-rose-500/20 dark:hover:bg-rose-900/20 p-2 rounded-xl transition-colors"><TrashIcon className="w-4 h-4" /></button>
                                     </td>
                                 </tr>
                             ))}
@@ -809,7 +1025,7 @@ export default function App() {
                             </p>
                             <div className="flex justify-center gap-4">
                                 <Button onClick={acceptInvite} className="px-8 py-3">Accept Proposal</Button>
-                                <Button variant="secondary" onClick={declineInvite} className="px-8 py-3 text-rose-500 hover:bg-rose-50">Decline</Button>
+                                <Button variant="secondary" onClick={declineInvite} className="px-8 py-3 text-rose-500 dark:hover:bg-rose-900/20">Decline</Button>
                             </div>
                         </Card>
                     </div>
@@ -819,82 +1035,86 @@ export default function App() {
 
         // Standard Dashboard
         return (
-            <div className="space-y-6">
-                <div className="flex flex-col md:flex-row gap-6">
-                    <Card className="flex-1 bg-gradient-to-br from-indigo-600 to-violet-600 !border-none text-white relative overflow-hidden">
-                        <div className="relative z-10">
-                            <h2 className="text-3xl font-bold mb-2">Welcome back, {userName}!</h2>
-                            <p className="text-indigo-100 opacity-90">
-                                {userTeam 
-                                    ? (isTeamActive ? 'Project is active and tracking.' : 'Waiting for team members to accept.') 
-                                    : 'No active projects.'}
-                            </p>
-                            {!userTeam && <Button onClick={() => setCurrentView(VIEWS.REGISTRATION)} className="mt-6 bg-white text-indigo-600 hover:bg-indigo-50 shadow-none">Start Project</Button>}
-                        </div>
-                        <div className="absolute right-0 bottom-0 opacity-10 transform translate-y-1/4 translate-x-1/4"><DatabaseIcon width="200" height="200" /></div>
-                    </Card>
-
-                    <div className="flex-1 grid grid-cols-2 gap-4">
-                        <Card className="flex flex-col items-center justify-center text-center">
-                            <div className={`w-12 h-12 rounded-full flex items-center justify-center mb-3 ${darkMode ? 'bg-indigo-900/50 text-indigo-400' : 'bg-indigo-50 text-indigo-600'}`}><DatabaseIcon /></div>
-                            <h3 className={`text-2xl font-bold ${theme.heading}`}>{projects.length}</h3>
-                            <p className={`text-xs ${theme.textSecondary}`}>Total Projects</p>
-                        </Card>
-                        <Card className="flex flex-col items-center justify-center text-center">
-                            <div className={`w-12 h-12 rounded-full flex items-center justify-center mb-3 ${darkMode ? 'bg-emerald-900/50 text-emerald-400' : 'bg-emerald-50 text-emerald-600'}`}><TeamIcon /></div>
-                            <h3 className={`text-2xl font-bold ${theme.heading}`}>{projects.reduce((a,b)=>a + (b.members?.length||0),0)}</h3>
-                            <p className={`text-xs ${theme.textSecondary}`}>Active Students</p>
-                        </Card>
+            <div className="space-y-8">
+                {/* Hero Card - Highly Visual */}
+                <Card className="flex flex-col md:flex-row gap-6 p-8 bg-gradient-to-br from-indigo-700 to-purple-800 !border-none text-white relative overflow-hidden h-60 md:h-72 items-center">
+                    {/* Decorative background element */}
+                    <div className="absolute right-0 bottom-0 opacity-10 transform translate-y-1/3 translate-x-1/4"><DatabaseIcon width="300" height="300" /></div>
+                    
+                    <div className="relative z-10 flex-1">
+                        <h2 className="text-4xl font-extrabold mb-2">Hello, {userName}!</h2>
+                        <p className="text-indigo-200 text-lg">
+                            {userTeam 
+                                ? (isTeamActive ? `Tracking active project: ${userTeam.name}` : `Waiting for team assembly...`) 
+                                : 'Ready to start your next academic project?'}
+                        </p>
+                        {!userTeam && <Button onClick={() => setCurrentView(VIEWS.REGISTRATION)} className="mt-8 bg-white text-indigo-700 hover:bg-indigo-50 shadow-none hover:shadow-lg">Start Project Now <PlusIcon className="w-5 h-5"/></Button>}
+                        {userTeam && isTeamActive && <Button onClick={() => setCurrentView(VIEWS.TRACKING)} className="mt-8 bg-white text-indigo-700 hover:bg-indigo-50 shadow-none hover:shadow-lg">Go to Project <ProgressIcon className="w-5 h-5"/></Button>}
                     </div>
-                </div>
+
+                    {/* Stats Summary - Desktop/Tablet */}
+                    <div className="hidden md:grid grid-cols-2 gap-4 w-full md:w-auto md:space-y-0 relative z-10">
+                        <div className="p-4 bg-white/10 rounded-xl backdrop-blur-sm text-center">
+                            <h3 className="text-3xl font-bold">{projects.length}</h3>
+                            <p className="text-xs text-indigo-200">Total Projects</p>
+                        </div>
+                        <div className="p-4 bg-white/10 rounded-xl backdrop-blur-sm text-center">
+                            <h3 className="text-3xl font-bold">{projects.reduce((a,b)=>a + (b.members?.length||0),0)}</h3>
+                            <p className="text-xs text-indigo-200">Total Students</p>
+                        </div>
+                    </div>
+                </Card>
 
                 {userTeam && (
                     <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-                        {/* Project Status */}
+                        {/* Project Status & Progress */}
                         <Card className="lg:col-span-2">
                             <div className="flex justify-between items-start mb-6">
                                 <div>
-                                    <h3 className={`text-xl font-bold ${theme.heading}`}>{userTeam.name}</h3>
-                                    <p className={`${theme.textSecondary} text-sm`}>{userTeam.teamName}</p>
+                                    <h3 className={`text-2xl font-bold ${theme.heading}`}>{userTeam.name}</h3>
+                                    <p className={`${theme.textSecondary} text-base`}>Team: {userTeam.teamName}</p>
                                 </div>
-                                <span className={`px-3 py-1 rounded-full text-xs font-bold ${userTeam.evaluation.status === 'Completed' ? 'bg-emerald-100 text-emerald-700' : 'bg-amber-100 text-amber-700'}`}>
+                                <span className={`px-3 py-1.5 rounded-full text-xs font-bold ${userTeam.evaluation.status === 'Completed' ? 'bg-emerald-100 text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-300' : 'bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-300'}`}>
                                     {userTeam.evaluation.status}
                                 </span>
                             </div>
                              {!isTeamActive && (
-                                <div className="mb-6 p-4 bg-amber-500/10 border border-amber-500/20 rounded-xl flex items-center gap-3 text-amber-600">
+                                <div className="mb-6 p-4 bg-amber-500/10 border border-amber-500/20 rounded-xl flex items-center gap-3 text-amber-600 dark:text-amber-300">
                                     <ClockIcon className="w-5 h-5 flex-shrink-0" />
-                                    <span className="text-sm font-medium">Team formation in progress. Features locked until everyone accepts.</span>
+                                    <span className="text-sm font-medium">Team formation in progress. All features are locked until everyone accepts.</span>
                                 </div>
                             )}
                             <div className="space-y-4">
                                 <div>
-                                    <div className="flex justify-between text-xs mb-2">
-                                        <span className={theme.textSecondary}>Task Progress</span>
+                                    <div className="flex justify-between text-sm mb-2">
+                                        <span className={theme.textSecondary}>Task Completion</span>
                                         <span className={theme.textPrimary}>
                                             {Math.round(((userTeam.tasks || []).filter(t => t.completed).length / ((userTeam.tasks || []).length || 1)) * 100)}%
                                         </span>
                                     </div>
-                                    <div className="w-full h-2 bg-gray-200 dark:bg-gray-700 rounded-full overflow-hidden">
-                                        <div className="h-full bg-indigo-600 transition-all duration-500" style={{ width: `${((userTeam.tasks || []).filter(t => t.completed).length / ((userTeam.tasks || []).length || 1)) * 100}%` }}></div>
+                                    <div className="w-full h-3 bg-gray-200 dark:bg-gray-700 rounded-full overflow-hidden shadow-inner">
+                                        <div className="h-full bg-gradient-to-r from-indigo-500 to-purple-500 transition-all duration-700" style={{ width: `${((userTeam.tasks || []).filter(t => t.completed).length / ((userTeam.tasks || []).length || 1)) * 100}%` }}></div>
                                     </div>
                                 </div>
+                                <Button onClick={() => setCurrentView(VIEWS.REPORTS)} className="w-full" variant="secondary" disabled={!isTeamActive}>
+                                    <ReportIcon className="w-5 h-5 mr-2"/> {userTeam.reportStatus === 'Submitted' ? 'View Final Report' : 'Draft Report / Submission'}
+                                </Button>
                             </div>
                         </Card>
 
                         {/* Team Roster with Status */}
                         <Card>
-                            <h3 className={`text-lg font-bold ${theme.heading} mb-4`}>Team Roster</h3>
-                            <ul className="space-y-3">
+                            <h3 className={`text-lg font-bold ${theme.heading} mb-4 border-b pb-3 ${darkMode ? 'border-gray-700' : 'border-gray-200'}`}>Team Roster</h3>
+                            <ul className="space-y-4">
                                 {userTeam.members.map((m, i) => (
                                     <li key={i} className="flex items-center justify-between text-sm">
-                                        <div className="flex items-center gap-2">
-                                            <div className={`w-2 h-2 rounded-full ${m.status === 'accepted' ? 'bg-emerald-500' : 'bg-amber-500'}`}></div>
+                                        <div className="flex items-center gap-3">
+                                            <div className={`w-3 h-3 rounded-full ${m.status === 'accepted' ? 'bg-emerald-500' : 'bg-amber-500'}`}></div>
                                             <span className={m.status === 'accepted' ? theme.textPrimary : theme.textSecondary}>
                                                 {m.name === "Invited User" ? m.email : m.name}
                                             </span>
                                         </div>
-                                        <span className={`text-xs ${m.status === 'accepted' ? 'text-emerald-500' : 'text-amber-500'}`}>
+                                        <span className={`text-xs font-medium ${m.status === 'accepted' ? 'text-emerald-500' : 'text-amber-500'}`}>
                                             {m.status}
                                         </span>
                                     </li>
@@ -908,125 +1128,156 @@ export default function App() {
     };
 
     // --- Main Render ---
-    if (error) return <div className="flex items-center justify-center min-h-screen bg-rose-50 text-rose-600 p-4">{error}</div>;
-    if (!isAuthReady) return <div className={`flex items-center justify-center min-h-screen ${theme.appBg} ${theme.textPrimary}`}>Loading...</div>;
+    if (error) return <div className="flex items-center justify-center min-h-screen bg-rose-900 text-rose-300 p-4 font-mono text-center">Initialization Error: {error}</div>;
+    if (!isAuthReady) return <div className={`flex items-center justify-center min-h-screen ${theme.appBg} ${theme.textPrimary}`}>
+        <div className="w-8 h-8 border-4 border-indigo-500 border-t-transparent rounded-full animate-spin"></div>
+        <span className="ml-3 font-medium">Loading Application...</span>
+    </div>;
     if (!userId) return <AuthScreen />;
 
     return (
-        <div className={`flex flex-col min-h-screen ${theme.appBg} ${theme.textPrimary} transition-colors duration-300 font-sans selection:bg-indigo-500 selection:text-white`}>
+        <div className={`flex flex-col min-h-screen ${theme.appBg} ${theme.textPrimary} transition-colors duration-500 font-sans selection:bg-indigo-500 selection:text-white`}>
+            
             {/* Top Navigation Bar */}
-            <header className={`fixed top-0 w-full z-30 ${theme.navBg} px-4 lg:px-8 py-3 flex items-center justify-between`}>
-                <div className="flex items-center gap-3">
-                    <div className="w-9 h-9 bg-indigo-600 rounded-lg flex items-center justify-center text-white font-bold text-lg shadow-lg shadow-indigo-600/20">P</div>
-                    <span className={`font-bold text-xl hidden md:block ${theme.heading}`}>ProTrack</span>
+            <header className={`fixed top-0 w-full z-30 ${theme.navBg} px-4 lg:px-8 py-3 flex items-center justify-between shadow-lg`}>
+                
+                {/* Logo & Mobile Menu Button */}
+                <div className="flex items-center gap-4">
+                    <button onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)} className={`md:hidden p-2 rounded-lg ${theme.navItem}`}>
+                        {isMobileMenuOpen ? <XIcon className="w-6 h-6" /> : <MenuIcon className="w-6 h-6" />}
+                    </button>
+                    <div className="flex items-center gap-3">
+                        <div className="w-10 h-10 bg-gradient-to-br from-indigo-500 to-purple-500 rounded-xl flex items-center justify-center text-white font-bold text-lg shadow-xl shadow-indigo-500/30 flex-shrink-0">P</div>
+                        <span className={`font-extrabold text-xl ${theme.heading}`}>ProTrack.ai</span>
+                    </div>
                 </div>
 
-                <nav className="hidden md:flex items-center space-x-2 bg-transparent">
+                {/* Desktop Navigation */}
+                <nav className="hidden md:flex items-center space-x-2">
                      {[
-                        { id: VIEWS.DASHBOARD, label: 'Dashboard' },
-                        { id: VIEWS.REGISTRATION, label: 'Register' },
-                        { id: VIEWS.TRACKING, label: 'Tracking' },
-                        { id: VIEWS.REPORTS, label: 'Reports' },
-                        { id: VIEWS.DATABASE, label: 'Projects' },
-                        ...(isUserAdmin ? [{ id: VIEWS.ADMIN, label: 'Admin' }] : [{ id: VIEWS.EVALUATION, label: 'Results' }])
+                        { id: VIEWS.DASHBOARD, label: 'Dashboard', IconComponent: HomeIcon },
+                        { id: VIEWS.REGISTRATION, label: 'Register', IconComponent: PlusIcon },
+                        { id: VIEWS.TRACKING, label: 'Tracking', IconComponent: ProgressIcon },
+                        { id: VIEWS.REPORTS, label: 'Reports', IconComponent: ReportIcon },
+                        { id: VIEWS.DATABASE, label: 'Projects', IconComponent: DatabaseIcon },
+                        ...(isUserAdmin ? [{ id: VIEWS.ADMIN, label: 'Admin', IconComponent: ShieldIcon }] : [{ id: VIEWS.EVALUATION, label: 'Results', IconComponent: EvaluateIcon }])
                     ].map((item) => (
-                         <button
-                            key={item.id}
-                            onClick={() => setCurrentView(item.id)}
-                            className={`px-4 py-2 rounded-full text-sm font-medium transition-all duration-200 ${currentView === item.id ? theme.navActive : theme.navItem}`}
-                        >
-                            {item.label}
-                        </button>
+                         <NavItem key={item.id} view={item.id} label={item.label} IconComponent={item.IconComponent} />
                     ))}
                 </nav>
 
-                <div className="flex items-center gap-3">
-                    <button onClick={toggleTheme} className={`p-2 rounded-full transition-colors ${theme.accentSecondary}`}>
-                        {darkMode ? <SunIcon className="w-5 h-5 text-amber-400" /> : <MoonIcon className="w-5 h-5 text-indigo-600" />}
-                    </button>
+                {/* Right Side Controls & Profile */}
+                <div className="flex items-center gap-4">
+                    
+                    <ThemeSwitch />
                     
                     {/* User Profile Button - Triggers Profile View */}
                     <div 
                         onClick={() => setCurrentView(VIEWS.PROFILE)}
-                        className="hidden sm:flex items-center gap-2 pl-2 border-l border-gray-200 dark:border-gray-700 cursor-pointer hover:opacity-80 transition-opacity"
+                        className="flex items-center gap-3 pl-3 border-l border-slate-700/50 dark:border-gray-700 cursor-pointer hover:opacity-80 transition-opacity"
                     >
                          <div className="text-right hidden lg:block">
-                            <p className={`text-xs font-bold ${theme.textPrimary}`}>{userName}</p>
-                            <p className={`text-[10px] ${theme.textSecondary} uppercase`}>{isUserAdmin ? 'Admin' : 'Student'}</p>
+                            <p className={`text-sm font-bold ${theme.textPrimary}`}>{userName}</p>
+                            <p className={`text-xs ${theme.textSecondary} uppercase`}>{isUserAdmin ? 'Admin' : userProfile.title}</p>
                         </div>
                         {userProfile.photoURL ? (
-                             <img src={userProfile.photoURL} alt="Profile" className="w-8 h-8 rounded-full object-cover border-2 border-indigo-500" />
+                             <img src={userProfile.photoURL} alt="Profile" className="w-10 h-10 rounded-full object-cover border-2 border-indigo-500 shadow-md" />
                         ) : (
-                            <div className="w-8 h-8 rounded-full bg-gradient-to-tr from-indigo-500 to-purple-500 flex items-center justify-center text-white text-xs font-bold border-2 border-indigo-500">
+                            <div className="w-10 h-10 rounded-full bg-gradient-to-tr from-indigo-500 to-purple-500 flex items-center justify-center text-white text-base font-bold border-2 border-indigo-500 shadow-md">
                                 {userName.charAt(0).toUpperCase()}
                             </div>
                         )}
                     </div>
                     
-                     <button onClick={() => handleAction('logout')} className={`p-2 text-rose-500 hover:bg-rose-50 dark:hover:bg-rose-900/20 rounded-lg transition-colors`} title="Sign Out">
-                        <LogOutIcon className="w-5 h-5" />
+                     <button onClick={() => handleAction('logout')} className={`p-2 rounded-xl transition-colors text-rose-500 hover:bg-rose-50 dark:hover:bg-rose-900/20`} title="Sign Out">
+                        <LogOutIcon className="w-6 h-6" />
                     </button>
                 </div>
             </header>
 
-            {/* Mobile Nav (Bottom Bar for small screens) */}
-            <div className={`md:hidden fixed bottom-0 w-full z-30 ${theme.navBg} border-t border-gray-200 dark:border-gray-800 px-4 py-2 flex justify-around`}>
-                {[VIEWS.DASHBOARD, VIEWS.TRACKING, VIEWS.REPORTS, VIEWS.DATABASE].map((view) => (
-                     <button key={view} onClick={() => setCurrentView(view)} className={`p-2 rounded-xl ${currentView === view ? 'text-indigo-600 bg-indigo-50 dark:bg-indigo-900/20' : theme.textSecondary}`}>
-                         {view === VIEWS.DASHBOARD && <DatabaseIcon className="w-6 h-6" />}
-                         {view === VIEWS.TRACKING && <ProgressIcon className="w-6 h-6" />}
-                         {view === VIEWS.REPORTS && <ReportIcon className="w-6 h-6" />}
-                         {view === VIEWS.DATABASE && <TeamIcon className="w-6 h-6" />}
-                     </button>
-                ))}
-                 <button onClick={() => setCurrentView(isUserAdmin ? VIEWS.ADMIN : VIEWS.PROFILE)} className={`p-2 rounded-xl ${currentView === (isUserAdmin ? VIEWS.ADMIN : VIEWS.PROFILE) ? 'text-indigo-600 bg-indigo-50 dark:bg-indigo-900/20' : theme.textSecondary}`}>
-                    {isUserAdmin ? <ShieldIcon className="w-6 h-6" /> : <UserIcon className="w-6 h-6" />}
-                 </button>
+            {/* Mobile Navigation Menu (Overlay) */}
+            <div className={`md:hidden fixed top-20 w-full h-auto z-20 transition-all duration-300 ${isMobileMenuOpen ? 'translate-y-0 opacity-100' : '-translate-y-full opacity-0 pointer-events-none'} ${theme.navBg} shadow-xl rounded-b-2xl p-4`}>
+                <div className="space-y-2">
+                    {[
+                        { id: VIEWS.DASHBOARD, label: 'Dashboard', IconComponent: HomeIcon },
+                        { id: VIEWS.REGISTRATION, label: 'Register Project', IconComponent: PlusIcon },
+                        { id: VIEWS.TRACKING, label: 'Task Tracking', IconComponent: ProgressIcon },
+                        { id: VIEWS.REPORTS, label: 'Submission Portal', IconComponent: ReportIcon },
+                        { id: VIEWS.DATABASE, label: 'Project Directory', IconComponent: DatabaseIcon },
+                        ...(isUserAdmin ? [{ id: VIEWS.ADMIN, label: 'Admin Console', IconComponent: ShieldIcon }] : [{ id: VIEWS.EVALUATION, label: 'Evaluation Results', IconComponent: EvaluateIcon }]),
+                        { id: VIEWS.PROFILE, label: 'Profile Settings', IconComponent: UserIcon }
+                    ].map((item) => (
+                        <NavItem key={item.id} view={item.id} label={item.label} IconComponent={item.IconComponent} />
+                    ))}
+                </div>
             </div>
 
             {/* Main Content */}
-            <main className={`flex-1 w-full max-w-7xl mx-auto px-4 lg:px-8 pt-24 pb-24 md:pb-12 transition-all duration-300`}>
+            <main className={`flex-1 w-full max-w-7xl mx-auto px-4 lg:px-8 pt-28 pb-12 transition-all duration-300`}>
                 <div className="animate-fade-in">
                     {currentView === VIEWS.DASHBOARD && <Dashboard />}
                     {currentView === VIEWS.REGISTRATION && <RegistrationView />}
                     {currentView === VIEWS.REPORTS && <ReportView />}
-                    {currentView === VIEWS.ADMIN && <AdminPanel />}
+                    {currentView === VIEWS.ADMIN && isUserAdmin && <AdminPanel />}
                     {currentView === VIEWS.TRACKING && <ProgressTrackingView />}
                     {currentView === VIEWS.PROFILE && <ProfileView />}
 
                     {currentView === VIEWS.DATABASE && (
-                        <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
-                            {projects.map(p => (
-                                <Card key={p.id} className="relative overflow-hidden group">
-                                    <div className="absolute top-0 right-0 p-4 opacity-10 group-hover:opacity-20 transition-opacity"><TeamIcon width="80" height="80"/></div>
-                                    <h3 className={`text-lg font-bold ${theme.heading} mb-1`}>{p.name}</h3>
-                                    <p className={`text-sm ${theme.textSecondary} mb-4`}>{p.teamName}</p>
-                                    <div className="flex items-center gap-2 text-xs bg-gray-100 dark:bg-gray-700 w-fit px-2 py-1 rounded mb-4">
-                                        <div className="w-2 h-2 rounded-full bg-indigo-500"></div>
-                                        <span className={theme.textPrimary}>{p.evaluation?.status || 'Pending'}</span>
-                                    </div>
-                                    <div className="w-full bg-gray-200 dark:bg-gray-700 h-1.5 rounded-full overflow-hidden">
-                                        <div className="bg-indigo-500 h-full" style={{width: `${((p.tasks || []).filter(t => t.completed).length / ((p.tasks || []).length || 1)) * 100}%`}}></div>
-                                    </div>
-                                </Card>
-                            ))}
+                        <div className="space-y-8">
+                            <h1 className={`text-4xl font-extrabold ${theme.heading}`}>Project Directory</h1>
+                            <p className={`text-lg ${theme.textSecondary}`}>Browse all registered projects and track their high-level progress.</p>
+                            
+                            <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
+                                {projects.map(p => {
+                                    const progress = ((p.tasks || []).filter(t => t.completed).length / ((p.tasks || []).length || 1)) * 100;
+                                    return (
+                                    <Card key={p.id} className="relative overflow-hidden group hover:border-indigo-500/50">
+                                        <div className="absolute top-0 right-0 p-4 opacity-10 group-hover:opacity-20 transition-opacity"><DatabaseIcon width="80" height="80" className="text-indigo-400"/></div>
+                                        <h3 className={`text-xl font-bold ${theme.heading} mb-1`}>{p.name}</h3>
+                                        <p className={`text-sm ${theme.textSecondary} mb-4`}>Team: {p.teamName}</p>
+                                        <div className="flex items-center gap-3 mb-4">
+                                            <div className={`px-3 py-1 rounded-full text-xs font-semibold ${p.evaluation?.status === 'Completed' ? 'bg-emerald-100 text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-300' : 'bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-300'}`}>
+                                                {p.evaluation?.status || 'Pending'}
+                                            </div>
+                                            {p.evaluation?.status === 'Completed' && <span className="font-bold text-indigo-500 text-sm">{p.evaluation.score}/100</span>}
+                                        </div>
+                                        <div className="text-sm font-medium mb-2 flex justify-between">
+                                            <span className={theme.textSecondary}>Task Progress</span>
+                                            <span className={theme.textPrimary}>{Math.round(progress)}%</span>
+                                        </div>
+                                        <div className="w-full bg-gray-200 dark:bg-gray-700 h-2 rounded-full overflow-hidden shadow-inner">
+                                            <div className="h-full bg-gradient-to-r from-indigo-500 to-purple-500 transition-all duration-700" style={{width: `${progress}%`}}></div>
+                                        </div>
+                                    </Card>
+                                );})}
+                            </div>
                         </div>
                     )}
                     
                     {currentView === VIEWS.EVALUATION && userTeam && (
-                        <Card>
-                            <h2 className={`text-2xl font-bold mb-6 ${theme.heading}`}>Evaluation Results</h2>
-                            <div className={`p-8 rounded-2xl text-center ${darkMode ? 'bg-gray-900' : 'bg-gray-50'}`}>
-                                <div className="text-5xl font-black text-transparent bg-clip-text bg-gradient-to-r from-indigo-400 to-purple-500 mb-2">
-                                    {userTeam.evaluation.score}/100
+                        <div className="max-w-3xl mx-auto">
+                            <h1 className={`text-4xl font-extrabold mb-8 ${theme.heading}`}>Evaluation Results</h1>
+                            <h2 className={`text-xl font-bold mb-8 ${theme.heading} text-indigo-500`}>{userTeam.name}</h2>
+                            <Card>
+                                <div className={`p-8 rounded-2xl text-center ${darkMode ? 'bg-gray-900' : 'bg-gray-50'}`}>
+                                    <EvaluateIcon className="w-12 h-12 mx-auto text-indigo-500 mb-4"/>
+                                    <p className={`text-lg font-medium ${theme.textPrimary} mb-4`}>{userTeam.evaluation.status}</p>
+                                    <div className="text-6xl font-black text-transparent bg-clip-text bg-gradient-to-r from-indigo-500 to-purple-600 mb-6">
+                                        {userTeam.evaluation.score}/100
+                                    </div>
+                                    
+                                    <div className={`text-left p-6 rounded-xl ${darkMode ? 'bg-gray-800 border border-gray-700' : 'bg-white border border-gray-200'}`}>
+                                        <p className={`text-sm font-bold ${theme.textSecondary} uppercase mb-3 border-b pb-2 ${darkMode ? 'border-gray-700' : 'border-gray-200'}`}>Instructor Feedback</p>
+                                        <p className={theme.textPrimary}>{userTeam.evaluation.feedback}</p>
+                                    </div>
                                 </div>
-                                <p className={`text-lg font-medium ${theme.textPrimary} mb-6`}>{userTeam.evaluation.status}</p>
-                                <div className={`text-left p-4 rounded-xl ${darkMode ? 'bg-gray-800' : 'bg-white border border-gray-200'}`}>
-                                    <p className={`text-sm font-bold ${theme.textSecondary} uppercase mb-2`}>Feedback</p>
-                                    <p className={theme.textPrimary}>{userTeam.evaluation.feedback}</p>
+                                <div className="mt-6 flex justify-center">
+                                    <Button variant="secondary" onClick={() => setCurrentView(VIEWS.REPORTS)} className="text-sm">
+                                        <ReportIcon className="w-4 h-4 mr-2"/> Review Submission
+                                    </Button>
                                 </div>
-                            </div>
-                        </Card>
+                            </Card>
+                        </div>
                     )}
                 </div>
             </main>
