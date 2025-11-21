@@ -36,6 +36,7 @@ Acadex is a full-featured **Academic Project Management System** built using **R
 - View all projects & users  
 - Edit project name / team name  
 - Delete projects & user data  
+- Open detailed submission view  
 - Evaluate submissions (Rubric-based)  
 - Provide feedback  
 - Mark evaluation as complete  
@@ -63,15 +64,14 @@ Acadex is a full-featured **Academic Project Management System** built using **R
 
 ## 📂 Folder Structure (Simplified)
 
+```
 src/
-├── App.jsx
-├── index.js
-├── styles.css
+ ├── App.jsx
+ ├── index.js
+ ├── styles.css
 public/
-└── logo.png
-
-yaml
-Copy code
+ └── logo.png
+```
 
 > The entire application currently lives inside a single `App.jsx` file for simplicity.
 
@@ -79,48 +79,67 @@ Copy code
 
 ## 🔧 Setup Guide (Beginner Friendly)
 
-### 1️⃣ Install Node.js  
-Download from: https://nodejs.org  
+### 1️⃣ Install Node.js
+
+Download from: https://nodejs.org
 
 Check installation:
 
-```sh
+```bash
 node -v
 npm -v
-2️⃣ Create Your Project (Vite)
-sh
-Copy code
+```
+
+---
+
+### 2️⃣ Create Your Project (Vite)
+
+```bash
 npm create vite@latest acadex
 cd acadex
 npm install
-Replace the default App.jsx with your own.
+```
 
-3️⃣ Install Dependencies
-sh
-Copy code
+Replace the default `App.jsx` with your own.
+
+---
+
+### 3️⃣ Install Dependencies
+
+```bash
 npm install firebase
 npm install -D tailwindcss postcss autoprefixer
 npx tailwindcss init -p
-Enable Tailwind in tailwind.config.js:
+```
 
-js
-Copy code
-content: [
-  "./index.html",
-  "./src/**/*.{js,jsx}",
-]
-Add Tailwind imports to index.css:
+Enable Tailwind in **tailwind.config.js**:
 
-css
-Copy code
+```js
+export default {
+  content: [
+    "./index.html",
+    "./src/**/*.{js,jsx}",
+  ],
+  theme: { extend: {} },
+  plugins: [],
+}
+```
+
+Add Tailwind imports to **index.css**:
+
+```css
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
-4️⃣ Firebase Configuration
-Inside App.jsx, the Firebase config already exists:
+```
 
-js
-Copy code
+---
+
+## 🔐 Firebase Setup
+
+Your Firebase config should look like this inside `App.jsx`:
+
+```js
 const firebaseConfig = {
   apiKey: "...",
   authDomain: "...",
@@ -129,72 +148,46 @@ const firebaseConfig = {
   messagingSenderId: "...",
   appId: "...",
 };
-Ensure Firebase Authentication & Firestore are enabled in the console.
+```
 
-5️⃣ Run the App
-sh
-Copy code
+Ensure the following are enabled in Firebase Console:  
+✔ Authentication  
+✔ Firestore Database  
+
+---
+
+## ▶️ Running the App
+
+```bash
 npm run dev
-Open the URL shown in your terminal.
+```
 
-🔐 Authentication Flow
-Available login options:
+Open the local URL shown in your terminal.
 
-Email/Password
+---
 
-Google OAuth
+## 🛠️ Core Features Explained
 
-Guest account
+### 1. User Profiles
+Stored in Firestore at:
 
-Admins are detected using:
-
-js
-Copy code
-const ADMIN_EMAILS = ["admin@acadex.edu", "admin@protrack.edu"];
-🛠️ Core Features Explained
-🧍 1. User Profiles
-Every user can configure:
-
-Display name
-
-Title / Role
-
-Bio
-
-Profile picture (Base64 stored)
-
-Stored in Firestore under:
-
-bash
-Copy code
+```
 artifacts/{appId}/users/{userId}
-🧩 2. Project Creation
-Each project includes:
+```
 
-Team name
-
-Project title
-
-List of members
-
-Tasks
-
-Reports
-
-Files (Drive/MediaFire links)
-
-Evaluation data
+### 2. Projects
 
 Stored under:
 
-swift
-Copy code
+```
 artifacts/{appId}/public/data/projects
-⏳ 3. Tasks (Progress Tracking)
-A task object looks like:
+```
 
-json
-Copy code
+Each project includes tasks, report, members list, evaluation, and supporting files.
+
+### 3. Task Structure
+
+```json
 {
   "id": "uuid",
   "title": "",
@@ -203,130 +196,120 @@ Copy code
   "dueDate": "",
   "completed": false
 }
-Real-time updates are triggered using Firestore onSnapshot.
+```
 
-🛡️ Admin Panel Features
+---
+
+## 🛡️ Admin Panel Features
+
 Admins can:
 
-View all submissions
+- View all projects  
+- View all registered users  
+- Edit project/team name  
+- Delete project or user data  
+- Open project submission details  
+- Evaluate using rubric  
+- Mark evaluation status  
 
-Edit project/team name
+### Rubric:
+- Innovation: 40 pts  
+- Execution: 30 pts  
+- Documentation: 30 pts  
 
-Delete projects
+---
 
-Delete users
+## 🌐 Deployment (Vercel)
 
-Open detailed submission view
+1. Push your repo to GitHub  
+2. Go to https://vercel.com  
+3. Import your repository  
+4. Build command:
 
-Evaluate reports using rubric
-
-Enter feedback
-
-Mark evaluation as “Completed”
-
-Rubric:
-Innovation (40 pts)
-
-Execution (30 pts)
-
-Documentation (30 pts)
-
-Total auto-calculated.
-
-🌐 Deployment (Vercel Guide)
-Push your repo to GitHub
-
-Visit https://vercel.com
-
-Import the repo
-
-Build command:
-
-arduino
-Copy code
+```
 npm run build
-Output directory:
+```
 
-nginx
-Copy code
+5. Output directory:
+
+```
 dist
-Deploy 🚀
+```
 
-📄 Environment Variables (Optional)
+6. Deploy 🎉
+
+---
+
+## 🧩 Environment Variables (Optional)
+
 To hide Firebase config, create:
 
-bash
-Copy code
+```
 .env
+```
+
 Add:
 
-ini
-Copy code
+```
 VITE_API_KEY=xxxx
 VITE_AUTH_DOMAIN=xxxx
 VITE_PROJECT_ID=xxxx
 VITE_STORAGE_BUCKET=xxxx
 VITE_MESSAGING_SENDER_ID=xxxx
 VITE_APP_ID=xxxx
-Then use:
+```
 
-js
-Copy code
+Use inside code:
+
+```js
 apiKey: import.meta.env.VITE_API_KEY
-🤝 Contributing
-Fork the repository
+```
 
-Create a feature branch
+---
 
-Run the project locally
+## 🤝 Contributing
 
-Commit improvements
+1. Fork the repository  
+2. Create feature branch  
+3. Commit changes  
+4. Push and open PR  
 
-Open a pull request
+---
 
-Good contributions:
+## 🧯 Troubleshooting
 
-Splitting large App.jsx into components
-
-Adding true file uploads
-
-Adding guides/instructor roles
-
-UI/UX polish
-
-Adding notifications / email triggers
-
-🧯 Troubleshooting
-Firebase Auth not working?
+### Firebase Auth not working?
 Enable:
+- Email/Password  
+- Google  
+- Anonymous  
 
-Email/Password
+### Firestore Permission Denied?
+Use this during development:
 
-Google
-
-Anonymous
-
-Firestore Permission Denied?
-During testing:
-
-js
-Copy code
+```js
 allow read, write: if true;
-Project won't save?
-Regenerate Firestore indexes if needed.
+```
 
-🎉 Summary
-Acadex is a complete, production-ready Academic Project Management System featuring:
+---
 
-✔ Authentication
-✔ Team management
-✔ Real-time task tracking
-✔ Report writing & submission
-✔ Full admin review system
-✔ Beautiful UI/UX with Tailwind
-✔ Auto theme + admin UI
+## 🎉 Summary
 
-Ready to deploy, extend, and use.
+Acadex is a powerful academic project management system supporting:
 
-⭐ License
-You may choose MIT, Apache-2.0, or any license you prefer.
+✔ Authentication  
+✔ Team creation  
+✔ Real-time task tracking  
+✔ Report writing  
+✔ Admin evaluation  
+✔ Beautiful UI/UX with Tailwind  
+✔ Fully Firebase-backed  
+
+This app is ready for deployment and expansion.
+
+---
+
+## 📄 License
+
+MIT License (recommended).  
+Ask if you'd like me to generate one for you.
