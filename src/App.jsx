@@ -203,6 +203,7 @@ export default function App() {
 
     const registerTeam = async (tName, pName, memberEmails) => {
         if (!userEmail) return alertUser('error', 'You must have an email to register a team.');
+        if (memberEmails.length === 0) return alertUser('error', 'You must invite at least one team member.');
         if (projects.some(p => p.name.toLowerCase() === pName.toLowerCase())) return alertUser('error', 'Project name taken');
         
         const newMembers = [
@@ -543,7 +544,7 @@ export default function App() {
         if (!userTeam) return <div className={`text-center ${theme.textSecondary} p-12`}>
              <DatabaseIcon className="w-12 h-12 mx-auto mb-4 text-indigo-500" />
             <p className="text-lg font-medium">You need an active project to access {viewName}.</p>
-            <Button onClick={() => setCurrentView(VIEWS.REGISTRATION)} className="mt-4">Register Project Now</Button>
+            <Button onClick={() => setCurrentView(VIEWS.REGISTRATION)} className="mt-4 mx-auto">Register Project Now</Button>
         </div>;
         if (!isTeamActive) return (
             <div className={`text-center p-12`}>
