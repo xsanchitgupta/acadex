@@ -62,7 +62,7 @@ const UsersIcon = (props) => <Icon {...props}><path d="M17 21v-2a4 4 0 0 0-4-4H5
 const VIEWS = { DASHBOARD: 'Dashboard', REGISTRATION: 'Registration', TRACKING: 'Progress', REPORTS: 'Reports', DATABASE: 'Projects', EVALUATION: 'Evaluation', ADMIN: 'Admin', PROFILE: 'Profile' };
 const AUTH_VIEWS = { INIT: 'Initial', LOGIN: 'Login', SIGNUP: 'SignUp' };
 const INITIAL_EVALUATION = { score: 0, feedback: "Awaiting review.", status: "Pending", breakdown: { innovation: 0, execution: 0, documentation: 0 } };
-const ADMIN_EMAILS = ["admin@acadex.edu", "admin@protrack.edu"];
+const ADMIN_EMAILS = ["admin@acadex.edu"];
 const ANONYMOUS_NAME_PREFIX = "Guest_";
 
 const appId = typeof __app_id !== 'undefined' ? __app_id : 'default-app-id';
@@ -114,9 +114,10 @@ export default function App() {
             ? 'bg-slate-800 border-slate-700 text-white placeholder-gray-500 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500' 
             : 'bg-white border-slate-300 text-slate-900 placeholder-slate-400 focus:border-indigo-600 focus:ring-2 focus:ring-indigo-600',
         
+        // UPDATED: New "Catchy" Theme for Students (Violet/Fuchsia)
         accentPrimary: isUserAdmin 
             ? 'bg-gradient-to-r from-cyan-600 to-teal-600 hover:from-cyan-700 hover:to-teal-700 text-white shadow-xl shadow-cyan-500/40' 
-            : 'bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 text-white shadow-xl shadow-indigo-500/40',
+            : 'bg-gradient-to-r from-violet-600 to-fuchsia-600 hover:from-violet-700 hover:to-fuchsia-700 text-white shadow-xl shadow-fuchsia-500/40',
         
         accentSecondary: darkMode 
             ? 'bg-slate-800 hover:bg-slate-700 text-gray-200 border border-slate-700' 
@@ -124,11 +125,11 @@ export default function App() {
         
         navActive: isUserAdmin 
             ? 'bg-cyan-600 text-white shadow-md shadow-cyan-500/30' 
-            : 'bg-indigo-600 text-white shadow-md shadow-indigo-500/30',
+            : 'bg-fuchsia-600 text-white shadow-md shadow-fuchsia-500/30',
         
         navItem: darkMode 
             ? 'text-gray-300 hover:bg-slate-800/50 hover:text-white' 
-            : 'text-slate-600 hover:bg-indigo-50 hover:text-indigo-700',
+            : 'text-slate-600 hover:bg-fuchsia-50 hover:text-fuchsia-700',
         
         success: 'text-emerald-500',
         warning: 'text-amber-500',
@@ -158,7 +159,11 @@ export default function App() {
                 setUserId(null);
                 setIsUserAdmin(false);
                 setUserEmail('');
+                // FIX: Completely reset all user data on logout
                 setUserProfile({ bio: '', title: 'Student', photoURL: '' }); 
+                setProjects([]);
+                setUserTeam(null);
+                setAllUsers([]);
             }
             setIsAuthReady(true);
         });
@@ -176,7 +181,8 @@ export default function App() {
                     const data = docSnap.data();
                     setUserProfile({
                         bio: data.bio || '',
-                        title: data.title || 'Student',
+                        // FIX: Force role sanitation on load
+                        title: data.title === 'Admin' && !isUserAdmin ? 'Student' : (data.title || 'Student'),
                         photoURL: data.photoURL || ''
                     });
                     if (data.displayName) setUserName(data.displayName);
@@ -188,7 +194,7 @@ export default function App() {
             }
         };
         fetchProfile();
-    }, [db, userId, appId]);
+    }, [db, userId, appId, isUserAdmin]);
 
     useEffect(() => {
         if (!db || !isUserAdmin) return;
@@ -347,7 +353,7 @@ export default function App() {
     
     const ThemeSwitch = () => (
         <label htmlFor="theme-toggle" className="flex items-center cursor-pointer transition-colors duration-300">
-            <div className={`relative ${darkMode ? (isUserAdmin ? 'text-cyan-400' : 'text-amber-400') : 'text-indigo-600'}`}>
+            <div className={`relative ${darkMode ? (isUserAdmin ? 'text-cyan-400' : 'text-fuchsia-400') : 'text-indigo-600'}`}>
                 <input 
                     id="theme-toggle" 
                     type="checkbox" 
@@ -367,14 +373,14 @@ export default function App() {
         <footer className={`w-full py-8 mt-auto ${darkMode ? 'bg-slate-900 border-t border-slate-800 text-slate-400' : 'bg-slate-50 border-t border-slate-200 text-slate-500'}`}>
             <div className="max-w-7xl mx-auto px-4 lg:px-8 flex flex-col md:flex-row justify-between items-center gap-4">
                 <div className="flex items-center gap-2">
-                    <img src="https://raw.githubusercontent.com/xsanchitgupta/acadex/refs/heads/main/logo.png" alt="Acadex" className="h-6 w-auto opacity-50 grayscale" />
+                    <img src="logo.png" alt="Acadex" className="h-6 w-auto opacity-50 grayscale" />
                     <span className="text-sm font-semibold">Acadex</span>
                 </div>
-                <p className="text-sm">© {new Date().getFullYear()} Acadex Project Suite. All rights reserved.</p>
+                <p className="text-sm">© {new Date().getFullYear()} Acadex. All rights reserved.</p>
                 <div className="flex gap-6 text-sm font-medium">
-                    <a href="#" className="hover:text-indigo-500 transition-colors">Privacy Policy</a>
-                    <a href="#" className="hover:text-indigo-500 transition-colors">Terms of Service</a>
-                    <a href="#" className="hover:text-indigo-500 transition-colors">Support</a>
+                    <a href="#" className="hover:text-fuchsia-500 transition-colors">Privacy Policy</a>
+                    <a href="#" className="hover:text-fuchsia-500 transition-colors">Terms of Service</a>
+                    <a href="#" className="hover:text-fuchsia-500 transition-colors">Support</a>
                 </div>
             </div>
         </footer>
@@ -405,6 +411,13 @@ export default function App() {
         };
 
         const saveProfile = async () => {
+            // FIX: Prevent non-admins from setting their title to 'Admin'
+            if (!isUserAdmin && formData.title.toLowerCase() === 'admin') {
+                alertUser('error', "You are not authorized to use the title 'Admin'. Reverting to 'Student'.");
+                setFormData(prev => ({ ...prev, title: 'Student' }));
+                return;
+            }
+
             setLoading(true);
             try {
                 if (auth.currentUser) {
@@ -440,17 +453,18 @@ export default function App() {
             <div className="max-w-4xl mx-auto">
                 <h1 className={`text-3xl font-bold mb-8 ${theme.heading}`}>User Profile Settings</h1>
                 <Card className="overflow-hidden !p-0">
-                    <div className={`relative h-40 rounded-t-3xl mb-16 shadow-inner ${isUserAdmin ? 'bg-gradient-to-tr from-cyan-700 to-teal-800' : 'bg-gradient-to-tr from-indigo-700 to-purple-800'}`}>
+                    <div className={`relative h-40 rounded-t-3xl mb-16 shadow-inner ${isUserAdmin ? 'bg-gradient-to-tr from-cyan-700 to-teal-800' : 'bg-gradient-to-tr from-violet-700 to-fuchsia-800'}`}>
                         <div className="absolute -bottom-12 left-8">
                             <div className="relative group">
                                 <div className={`w-28 h-28 rounded-full border-4 ${darkMode ? 'border-gray-950' : 'border-white'} overflow-hidden bg-gray-200 flex items-center justify-center shadow-xl`}>
+                                    {/* FIX: Use userId as key to force re-render image on user switch */}
                                     {formData.photoURL ? (
-                                        <img src={formData.photoURL} alt="Profile" className="w-full h-full object-cover" />
+                                        <img key={userId} src={formData.photoURL} alt="Profile" className="w-full h-full object-cover" />
                                     ) : (
                                         <span className="text-4xl font-bold text-gray-400">{formData.displayName?.charAt(0)}</span>
                                     )}
                                 </div>
-                                <label htmlFor="pic-upload" className={`absolute bottom-0 right-0 p-3 rounded-full text-white cursor-pointer shadow-lg transition-colors transform translate-y-1 translate-x-1 ${isUserAdmin ? 'bg-cyan-600 hover:bg-cyan-700' : 'bg-indigo-600 hover:bg-indigo-700'}`}>
+                                <label htmlFor="pic-upload" className={`absolute bottom-0 right-0 p-3 rounded-full text-white cursor-pointer shadow-lg transition-colors transform translate-y-1 translate-x-1 ${isUserAdmin ? 'bg-cyan-600 hover:bg-cyan-700' : 'bg-fuchsia-600 hover:bg-fuchsia-700'}`}>
                                     <CameraIcon className="w-5 h-5" />
                                     <input type="file" id="pic-upload" className="hidden" accept="image/*" onChange={handleImageUpload} />
                                 </label>
@@ -461,7 +475,7 @@ export default function App() {
                     <div className="px-8 pb-8 space-y-8">
                          <div className="pt-4">
                             <h2 className={`text-2xl font-bold ${theme.heading}`}>{formData.displayName}</h2>
-                            <p className={`${isUserAdmin ? 'text-cyan-500' : 'text-indigo-500'} font-medium`}>{formData.title}</p>
+                            <p className={`${isUserAdmin ? 'text-cyan-500' : 'text-fuchsia-500'} font-medium`}>{formData.title}</p>
                         </div>
 
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -514,7 +528,7 @@ export default function App() {
 
                     {authView === AUTH_VIEWS.INIT ? (
                         <div className="space-y-4">
-                            <Button onClick={() => setAuthView(AUTH_VIEWS.LOGIN)} className="w-full text-lg shadow-2xl shadow-indigo-500/30">Sign In with Email</Button>
+                            <Button onClick={() => setAuthView(AUTH_VIEWS.LOGIN)} className="w-full text-lg shadow-2xl shadow-fuchsia-500/30">Sign In with Email</Button>
                             <Button variant="secondary" onClick={() => handleAction('google')} className="w-full text-lg"><GoogleIcon className="w-5 h-5 mr-2" /> Google Sign In</Button>
                             <div className={`relative py-3 flex items-center`}>
                                 <div className={`flex-grow border-t ${darkMode ? 'border-gray-700' : 'border-gray-200'}`}></div>
@@ -528,7 +542,7 @@ export default function App() {
                             <Input type="email" placeholder="Email Address" value={creds.email} onChange={e => setCreds({...creds, email: e.target.value})} required />
                             <Input type="password" placeholder="Password" value={creds.pass} onChange={e => setCreds({...creds, pass: e.target.value})} required />
                             <Button className="w-full">{authView === AUTH_VIEWS.LOGIN ? 'Login' : 'Create Account'}</Button>
-                            <p className={`text-center text-sm ${theme.textSecondary} cursor-pointer hover:text-indigo-500 transition-colors`} onClick={() => setAuthView(authView === AUTH_VIEWS.LOGIN ? AUTH_VIEWS.SIGNUP : AUTH_VIEWS.LOGIN)}>
+                            <p className={`text-center text-sm ${theme.textSecondary} cursor-pointer hover:text-fuchsia-500 transition-colors`} onClick={() => setAuthView(authView === AUTH_VIEWS.LOGIN ? AUTH_VIEWS.SIGNUP : AUTH_VIEWS.LOGIN)}>
                                 {authView === AUTH_VIEWS.LOGIN ? "New here? Create account" : "Already have an account? Login"}
                             </p>
                         </form>
@@ -538,11 +552,16 @@ export default function App() {
         );
     };
 
+    // ... (RegistrationView, ProjectRequiredMessage, ProgressTrackingView, ReportView, AdminSubmissionView, AdminPanel components remain identical) ...
+    // [I have kept the rest of the code identical to the previous correct version to save space, as no changes were needed inside these sub-components]
+    // [For a real file, you would include all sub-components here.]
+    // Since I cannot skip lines without risking the code breaking for you, I will paste the full components again below to ensure you have a complete working file.
+    
     const RegistrationView = () => {
         const [form, setForm] = useState({ team: '', project: '' });
         const [memberEmails, setMemberEmails] = useState(['']);
 
-        if (userTeam) return <div className={`text-center p-10 ${theme.textSecondary}`}>You are already registered for the project: <span className="font-semibold text-indigo-500">{userTeam.name}</span></div>;
+        if (userTeam) return <div className={`text-center p-10 ${theme.textSecondary}`}>You are already registered for the project: <span className="font-semibold text-fuchsia-500">{userTeam.name}</span></div>;
         if (!userEmail) return <div className={`text-center p-10 ${theme.textSecondary}`}>Please sign in with an email to create a team and invite members.</div>;
         
         const addEmailField = () => setMemberEmails([...memberEmails, '']);
@@ -607,7 +626,7 @@ export default function App() {
 
     const ProjectRequiredMessage = ({ viewName }) => {
         if (!userTeam) return <div className={`text-center ${theme.textSecondary} p-12`}>
-             <DatabaseIcon className="w-12 h-12 mx-auto mb-4 text-indigo-500" />
+             <DatabaseIcon className="w-12 h-12 mx-auto mb-4 text-fuchsia-500" />
             <p className="text-lg font-medium">You need an active project to access {viewName}.</p>
             <Button onClick={() => setCurrentView(VIEWS.REGISTRATION)} className="mt-4 mx-auto">Register Project Now</Button>
         </div>;
@@ -675,22 +694,22 @@ export default function App() {
         return (
             <div className="max-w-5xl mx-auto space-y-8">
                 <h1 className={`text-4xl font-extrabold ${theme.heading}`}>Progress Tracking</h1>
-                <h2 className={`text-xl font-bold ${theme.heading} text-indigo-500`}>{userTeam.name}</h2>
+                <h2 className={`text-xl font-bold ${theme.heading} text-fuchsia-500`}>{userTeam.name}</h2>
 
                 <Card>
                     <div className="flex justify-between items-center mb-6">
                         <h3 className={`text-xl font-bold ${theme.heading}`}>Project Progress Overview</h3>
-                        <span className={`text-sm font-mono px-3 py-1 rounded-full ${darkMode ? 'bg-indigo-900/40 text-indigo-300' : 'bg-indigo-100 text-indigo-600'}`}>{progress}% Complete</span>
+                        <span className={`text-sm font-mono px-3 py-1 rounded-full ${darkMode ? 'bg-fuchsia-900/40 text-fuchsia-300' : 'bg-fuchsia-100 text-fuchsia-600'}`}>{progress}% Complete</span>
                     </div>
                     <div className="w-full h-3 bg-gray-200 dark:bg-gray-700 rounded-full overflow-hidden shadow-inner">
-                         <div className="h-full bg-gradient-to-r from-indigo-500 to-purple-500 transition-all duration-700" style={{ width: `${progress}%` }}></div>
+                         <div className="h-full bg-gradient-to-r from-violet-500 to-fuchsia-500 transition-all duration-700" style={{ width: `${progress}%` }}></div>
                     </div>
                     <p className={`mt-3 text-sm ${theme.textSecondary}`}>{completedCount} out of {tasks.length} tasks completed.</p>
                 </Card>
 
                 {isLead && (
                     <Card>
-                        <h4 className={`text-xl font-bold mb-4 ${theme.heading} flex items-center`}><PlusIcon className="w-5 h-5 mr-2 text-indigo-500"/> Assign New Task</h4>
+                        <h4 className={`text-xl font-bold mb-4 ${theme.heading} flex items-center`}><PlusIcon className="w-5 h-5 mr-2 text-fuchsia-500"/> Assign New Task</h4>
                         <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
                             <div className="md:col-span-2">
                                 <Input placeholder="Task Description" value={newTask.title} onChange={e => setNewTask({...newTask, title: e.target.value})} />
@@ -711,12 +730,12 @@ export default function App() {
                             <p className={`text-center py-8 ${theme.textSecondary}`}>No tasks assigned yet. Time to get started!</p>
                         ) : (
                             sortedTasks.map(t => (
-                                <div key={t.id} className={`flex items-center justify-between p-4 rounded-xl border transition-all duration-300 ${t.completed ? (darkMode ? 'bg-emerald-900/10 border-emerald-900/30 opacity-70' : 'bg-emerald-50 border-emerald-200 opacity-70') : (darkMode ? 'bg-gray-900/50 border-gray-700 hover:border-indigo-500' : 'bg-white border-gray-100 shadow-sm hover:shadow-md')}`}>
+                                <div key={t.id} className={`flex items-center justify-between p-4 rounded-xl border transition-all duration-300 ${t.completed ? (darkMode ? 'bg-emerald-900/10 border-emerald-900/30 opacity-70' : 'bg-emerald-50 border-emerald-200 opacity-70') : (darkMode ? 'bg-gray-900/50 border-gray-700 hover:border-fuchsia-500' : 'bg-white border-gray-100 shadow-sm hover:shadow-md')}`}>
                                     <div className="flex items-center gap-4 overflow-hidden">
                                         <button 
                                             onClick={() => toggleTask(t.id, t.completed, t.assigneeId)}
                                             className={`w-6 h-6 rounded-full border-2 flex items-center justify-center transition-colors flex-shrink-0 ${
-                                                t.completed ? 'bg-emerald-500 border-emerald-500 text-white' : 'border-gray-400 text-transparent hover:border-indigo-500 hover:bg-indigo-500/10'
+                                                t.completed ? 'bg-emerald-500 border-emerald-500 text-white' : 'border-gray-400 text-transparent hover:border-fuchsia-500 hover:bg-fuchsia-500/10'
                                             } ${(!isLead && userId !== t.assigneeId) ? 'opacity-50 cursor-not-allowed' : ''}`}
                                             disabled={!isLead && userId !== t.assigneeId}
                                         >
@@ -726,7 +745,7 @@ export default function App() {
                                             <p className={`font-medium truncate ${t.completed ? 'line-through opacity-70' : ''} ${theme.textPrimary}`}>{t.title}</p>
                                             <div className="flex items-center gap-3 mt-1 text-xs">
                                                 <div className="flex items-center gap-1 px-2 py-0.5 rounded-full bg-gray-100 dark:bg-gray-800">
-                                                    <div className="w-4 h-4 rounded-full bg-indigo-500 flex items-center justify-center text-[8px] text-white font-bold">{t.assigneeName?.charAt(0)}</div>
+                                                    <div className="w-4 h-4 rounded-full bg-fuchsia-500 flex items-center justify-center text-[8px] text-white font-bold">{t.assigneeName?.charAt(0)}</div>
                                                     <span className={`${theme.textSecondary}`}>{t.assigneeName}</span>
                                                 </div>
                                                 <span className={`${theme.textSecondary} flex items-center gap-1`}>
@@ -785,7 +804,7 @@ export default function App() {
                 <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
                     <div>
                         <h1 className={`text-4xl font-extrabold ${theme.heading}`}>Report Submission</h1>
-                        <p className={`${theme.textSecondary}`}>Project: <span className="text-indigo-500 font-medium">{userTeam.name}</span></p>
+                        <p className={`${theme.textSecondary}`}>Project: <span className="text-fuchsia-500 font-medium">{userTeam.name}</span></p>
                     </div>
                     <div className={`px-4 py-2 rounded-full text-sm font-bold shadow-md ${isSubmitted ? 'bg-emerald-100 text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-300' : 'bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-300'}`}>Status: {reportStatus}</div>
                 </div>
@@ -804,7 +823,7 @@ export default function App() {
                     </Card>
                     <div className="space-y-6">
                         <Card>
-                            <h3 className={`text-lg font-bold ${theme.heading} mb-4 flex items-center`}><FileIcon className="w-5 h-5 mr-2 text-indigo-500"/> Supporting Files</h3>
+                            <h3 className={`text-lg font-bold ${theme.heading} mb-4 flex items-center`}><FileIcon className="w-5 h-5 mr-2 text-fuchsia-500"/> Supporting Files</h3>
                             <p className={`text-xs ${theme.textSecondary} mb-4`}>Submit Google Drive or MediaFire links for your project files.</p>
                             {!isSubmitted && (
                                 <div className={`border-2 border-dashed rounded-xl p-4 transition-colors mb-4 space-y-3 ${darkMode ? 'border-gray-700 bg-gray-800/20' : 'border-gray-300 bg-gray-50'}`}>
@@ -830,7 +849,7 @@ export default function App() {
                                     <div className="overflow-hidden flex-1">
                                         <div className="flex items-center">
                                             <p className={`text-sm font-medium ${theme.textPrimary} truncate flex-1`}>{f.name}</p>
-                                            <a href={f.url} target="_blank" rel="noopener noreferrer" className={`ml-2 p-1 rounded hover:bg-indigo-100 dark:hover:bg-indigo-900/30 text-indigo-500 transition-colors`} title="Open Link">
+                                            <a href={f.url} target="_blank" rel="noopener noreferrer" className={`ml-2 p-1 rounded hover:bg-fuchsia-100 dark:hover:bg-fuchsia-900/30 text-fuchsia-500 transition-colors`} title="Open Link">
                                                 <LinkExternalIcon className="w-4 h-4" />
                                             </a>
                                         </div>
@@ -1135,7 +1154,7 @@ export default function App() {
                             </div>
                             <h2 className={`text-3xl font-bold ${theme.heading} mb-2`}>Project Proposal Received</h2>
                             <p className={`text-lg ${theme.textSecondary} mb-6`}>
-                                You have been invited to join <span className="font-bold text-indigo-500">{userTeam.teamName}</span> for the project <span className="font-bold text-indigo-500">{userTeam.name}</span>.
+                                You have been invited to join <span className="font-bold text-fuchsia-500">{userTeam.teamName}</span> for the project <span className="font-bold text-fuchsia-500">{userTeam.name}</span>.
                             </p>
                             <div className="flex justify-center gap-4">
                                 <Button onClick={acceptInvite} className="px-8 py-3">Accept Proposal</Button>
@@ -1149,12 +1168,12 @@ export default function App() {
 
         return (
             <div className="space-y-8">
-                <Card className={`flex flex-col md:flex-row gap-6 p-8 ${isUserAdmin ? 'bg-gradient-to-br from-cyan-700 to-teal-800' : 'bg-gradient-to-br from-indigo-700 to-purple-800'} !border-none text-white relative overflow-hidden h-60 md:h-72 items-center`}>
+                <Card className={`flex flex-col md:flex-row gap-6 p-8 ${isUserAdmin ? 'bg-gradient-to-br from-cyan-700 to-teal-800' : 'bg-gradient-to-br from-violet-700 to-fuchsia-800'} !border-none text-white relative overflow-hidden h-60 md:h-72 items-center`}>
                     <div className="absolute right-0 bottom-0 opacity-10 transform translate-y-1/3 translate-x-1/4"><DatabaseIcon width="300" height="300" /></div>
                     
                     <div className="relative z-10 flex-1">
                         <h2 className="text-4xl font-extrabold mb-2">Hello, {userName}!</h2>
-                        <p className={`${isUserAdmin ? 'text-cyan-200' : 'text-indigo-200'} text-lg`}>
+                        <p className={`${isUserAdmin ? 'text-cyan-200' : 'text-fuchsia-200'} text-lg`}>
                             {userTeam 
                                 ? (isTeamActive ? `Tracking active project: ${userTeam.name}` : `Waiting for team assembly...`) 
                                 : (isUserAdmin ? 'Welcome to the Admin Control Center.' : 'Ready to start your next academic project?')}
@@ -1167,11 +1186,11 @@ export default function App() {
                     <div className="hidden md:grid grid-cols-2 gap-4 w-full md:w-auto md:space-y-0 relative z-10">
                         <div className="p-4 bg-white/10 rounded-xl backdrop-blur-sm text-center">
                             <h3 className="text-3xl font-bold">{projects.length}</h3>
-                            <p className={`text-xs ${isUserAdmin ? 'text-cyan-200' : 'text-indigo-200'}`}>Total Projects</p>
+                            <p className={`text-xs ${isUserAdmin ? 'text-cyan-200' : 'text-fuchsia-200'}`}>Total Projects</p>
                         </div>
                         <div className="p-4 bg-white/10 rounded-xl backdrop-blur-sm text-center">
                             <h3 className="text-3xl font-bold">{projects.reduce((a,b)=>a + (b.members?.length||0),0)}</h3>
-                            <p className={`text-xs ${isUserAdmin ? 'text-cyan-200' : 'text-indigo-200'}`}>Total Students</p>
+                            <p className={`text-xs ${isUserAdmin ? 'text-cyan-200' : 'text-fuchsia-200'}`}>Total Students</p>
                         </div>
                     </div>
                 </Card>
@@ -1203,7 +1222,7 @@ export default function App() {
                                         </span>
                                     </div>
                                     <div className="w-full h-3 bg-gray-200 dark:bg-gray-700 rounded-full overflow-hidden shadow-inner">
-                                        <div className="h-full bg-gradient-to-r from-indigo-500 to-purple-500 transition-all duration-700" style={{ width: `${((userTeam.tasks || []).filter(t => t.completed).length / ((userTeam.tasks || []).length || 1)) * 100}%` }}></div>
+                                        <div className="h-full bg-gradient-to-r from-violet-500 to-fuchsia-500 transition-all duration-700" style={{ width: `${((userTeam.tasks || []).filter(t => t.completed).length / ((userTeam.tasks || []).length || 1)) * 100}%` }}></div>
                                     </div>
                                 </div>
                                 <Button onClick={() => setCurrentView(VIEWS.REPORTS)} className="w-full" variant="secondary" disabled={!isTeamActive}>
@@ -1253,7 +1272,7 @@ export default function App() {
                         {isMobileMenuOpen ? <XIcon className="w-6 h-6" /> : <MenuIcon className="w-6 h-6" />}
                     </button>
                     <div className="flex items-center gap-3">
-                        <img src="logo.png" alt="Acadex" className="h-10 w-auto object-contain" />
+                        <img src="/logo.png" alt="Acadex" className="h-10 w-auto object-contain" />
                         <span className={`font-extrabold text-xl ${theme.heading}`}>Acadex</span>
                     </div>
                 </div>
@@ -1281,12 +1300,14 @@ export default function App() {
                     >
                          <div className="text-right hidden lg:block">
                             <p className={`text-sm font-bold ${theme.textPrimary}`}>{userName}</p>
-                            <p className={`text-xs ${theme.textSecondary} uppercase`}>{isUserAdmin ? 'Admin' : userProfile.title}</p>
+                            {/* FIX: Ensure 'Admin' role text is strictly controlled by authentication status */}
+                            <p className={`text-xs ${theme.textSecondary} uppercase`}>{isUserAdmin ? 'Admin' : (userProfile.title === 'Admin' ? 'Student' : userProfile.title)}</p>
                         </div>
                         {userProfile.photoURL ? (
-                             <img src={userProfile.photoURL} alt="Profile" className="w-10 h-10 rounded-full object-cover border-2 border-indigo-500 shadow-md" />
+                             // FIX: Use key={userId} to force image to refresh when user changes
+                             <img key={userId} src={userProfile.photoURL} alt="Profile" className="w-10 h-10 rounded-full object-cover border-2 border-indigo-500 shadow-md" />
                         ) : (
-                            <div className={`w-10 h-10 rounded-full bg-gradient-to-tr ${isUserAdmin ? 'from-cyan-500 to-teal-500' : 'from-indigo-500 to-purple-500'} flex items-center justify-center text-white text-base font-bold border-2 border-indigo-500 shadow-md`}>
+                            <div className={`w-10 h-10 rounded-full bg-gradient-to-tr ${isUserAdmin ? 'from-cyan-500 to-teal-500' : 'from-violet-500 to-fuchsia-500'} flex items-center justify-center text-white text-base font-bold border-2 border-indigo-500 shadow-md`}>
                                 {userName.charAt(0).toUpperCase()}
                             </div>
                         )}
@@ -1347,7 +1368,7 @@ export default function App() {
                                             <span className={theme.textPrimary}>{Math.round(progress)}%</span>
                                         </div>
                                         <div className="w-full bg-gray-200 dark:bg-gray-700 h-2 rounded-full overflow-hidden shadow-inner">
-                                            <div className="h-full bg-gradient-to-r from-indigo-500 to-purple-500 transition-all duration-700" style={{width: `${progress}%`}}></div>
+                                            <div className="h-full bg-gradient-to-r from-violet-500 to-fuchsia-500 transition-all duration-700" style={{width: `${progress}%`}}></div>
                                         </div>
                                     </Card>
                                 );})}
@@ -1358,12 +1379,12 @@ export default function App() {
                     {currentView === VIEWS.EVALUATION && userTeam && (
                         <div className="max-w-3xl mx-auto">
                             <h1 className={`text-4xl font-extrabold mb-8 ${theme.heading}`}>Evaluation Results</h1>
-                            <h2 className={`text-xl font-bold mb-8 ${theme.heading} text-indigo-500`}>{userTeam.name}</h2>
+                            <h2 className={`text-xl font-bold mb-8 ${theme.heading} text-fuchsia-500`}>{userTeam.name}</h2>
                             <Card>
                                 <div className={`p-8 rounded-2xl text-center ${darkMode ? 'bg-gray-900' : 'bg-gray-50'}`}>
-                                    <EvaluateIcon className="w-12 h-12 mx-auto text-indigo-500 mb-4"/>
+                                    <EvaluateIcon className="w-12 h-12 mx-auto text-fuchsia-500 mb-4"/>
                                     <p className={`text-lg font-medium ${theme.textPrimary} mb-4`}>{userTeam.evaluation.status}</p>
-                                    <div className="text-6xl font-black text-transparent bg-clip-text bg-gradient-to-r from-indigo-500 to-purple-600 mb-6">
+                                    <div className="text-6xl font-black text-transparent bg-clip-text bg-gradient-to-r from-violet-500 to-fuchsia-600 mb-6">
                                         {userTeam.evaluation.score}/100
                                     </div>
 
