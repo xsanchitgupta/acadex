@@ -26,10 +26,10 @@ import {
     deleteDoc
 } from 'firebase/firestore';
 
+// --- Icons ---
 const Icon = ({ children, className }) => (
     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}>{children}</svg>
 );
-const TeamIcon = (props) => <Icon {...props}><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></Icon>;
 const ProgressIcon = (props) => <Icon {...props}><path d="M12 20V10"/><path d="M18 20V4"/><path d="M6 20v-4"/></Icon>;
 const ReportIcon = (props) => <Icon {...props}><path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><line x1="10" y1="9" x2="8" y2="9"/></Icon>;
 const DatabaseIcon = (props) => <Icon {...props}><ellipse cx="12" cy="5" rx="9" ry="3"/><path d="M3 5v14a9 3 0 0 0 18 0V5"/><path d="M3 12A9 9 0 0 0 21 12"/><path d="M3 19A9 9 0 0 0 21 19"/></Icon>;
@@ -49,18 +49,20 @@ const SendIcon = (props) => <Icon {...props}><line x1="22" y1="2" x2="11" y2="13
 const MailIcon = (props) => <Icon {...props}><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></Icon>;
 const ClockIcon = (props) => <Icon {...props}><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></Icon>;
 const CameraIcon = (props) => <Icon {...props}><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></Icon>;
-const DownloadIcon = (props) => <Icon {...props}><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></Icon>;
 const EyeIcon = (props) => <Icon {...props}><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></Icon>;
 const GoogleIcon = ({ className }) => <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="currentColor" className={className}><path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" /><path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" /><path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" /><path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" /></svg>;
 const LinkExternalIcon = (props) => <Icon {...props}><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6" /><polyline points="15 3 21 3 21 9" /><line x1="10" y1="14" x2="21" y2="3" /></Icon>;
 const HomeIcon = (props) => <Icon {...props}><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></Icon>;
 const MenuIcon = (props) => <Icon {...props}><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="18" x2="21" y2="18"/></Icon>;
 const XIcon = (props) => <Icon {...props}><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></Icon>;
+const EditIcon = (props) => <Icon {...props}><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></Icon>;
+const CodeIcon = (props) => <Icon {...props}><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></Icon>;
+const UsersIcon = (props) => <Icon {...props}><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></Icon>;
 
 const VIEWS = { DASHBOARD: 'Dashboard', REGISTRATION: 'Registration', TRACKING: 'Progress', REPORTS: 'Reports', DATABASE: 'Projects', EVALUATION: 'Evaluation', ADMIN: 'Admin', PROFILE: 'Profile' };
 const AUTH_VIEWS = { INIT: 'Initial', LOGIN: 'Login', SIGNUP: 'SignUp' };
-const INITIAL_EVALUATION = { score: 0, feedback: "Awaiting review.", status: "Pending" };
-const ADMIN_EMAIL = "admin@acadex.edu";
+const INITIAL_EVALUATION = { score: 0, feedback: "Awaiting review.", status: "Pending", breakdown: { innovation: 0, execution: 0, documentation: 0 } };
+const ADMIN_EMAILS = ["admin@acadex.edu", "admin@protrack.edu"];
 const ANONYMOUS_NAME_PREFIX = "Guest_";
 
 const appId = typeof __app_id !== 'undefined' ? __app_id : 'default-app-id';
@@ -73,7 +75,6 @@ const firebaseConfig = {
   appId: "1:666326725274:web:780b44eeeca613c6c56523",
   measurementId: "G-NWY76GF5KN"
 };
-const initialAuthToken = typeof __initial_auth_token !== 'undefined' ? __initial_auth_token : null;
 
 export default function App() {
     const [db, setDb] = useState(null);
@@ -85,6 +86,7 @@ export default function App() {
     const [userProfile, setUserProfile] = useState({ bio: '', title: 'Student', photoURL: '' });
     const [currentView, setCurrentView] = useState(VIEWS.DASHBOARD);
     const [projects, setProjects] = useState([]);
+    const [allUsers, setAllUsers] = useState([]); 
     const [userTeam, setUserTeam] = useState(null);
     const [error, setError] = useState(null);
     const [authView, setAuthView] = useState(AUTH_VIEWS.INIT);
@@ -92,12 +94,15 @@ export default function App() {
     const [darkMode, setDarkMode] = useState(true);
     const [adminSelectedProject, setAdminSelectedProject] = useState(null);
     const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+    const [showRawData, setShowRawData] = useState(false);
 
     const toggleTheme = () => setDarkMode(!darkMode);
     
     const theme = {
         appBg: darkMode ? 'bg-gray-950' : 'bg-slate-50',
-        navBg: darkMode ? 'bg-gray-900/95 backdrop-blur-xl border-b border-slate-800' : 'bg-white/95 backdrop-blur-xl border-b border-slate-200',
+        navBg: darkMode 
+            ? (isUserAdmin ? 'bg-slate-900/95 backdrop-blur-xl border-b border-cyan-900' : 'bg-gray-900/95 backdrop-blur-xl border-b border-slate-800')
+            : 'bg-white/95 backdrop-blur-xl border-b border-slate-200',
         textPrimary: darkMode ? 'text-gray-50' : 'text-slate-900',
         textSecondary: darkMode ? 'text-gray-400' : 'text-slate-500',
         heading: darkMode ? 'text-white' : 'text-slate-900',
@@ -108,11 +113,19 @@ export default function App() {
         input: darkMode 
             ? 'bg-slate-800 border-slate-700 text-white placeholder-gray-500 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500' 
             : 'bg-white border-slate-300 text-slate-900 placeholder-slate-400 focus:border-indigo-600 focus:ring-2 focus:ring-indigo-600',
-        accentPrimary: 'bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 text-white shadow-xl shadow-indigo-500/40 transform active:scale-[.98]',
+        
+        accentPrimary: isUserAdmin 
+            ? 'bg-gradient-to-r from-cyan-600 to-teal-600 hover:from-cyan-700 hover:to-teal-700 text-white shadow-xl shadow-cyan-500/40' 
+            : 'bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 text-white shadow-xl shadow-indigo-500/40',
+        
         accentSecondary: darkMode 
-            ? 'bg-slate-800 hover:bg-slate-700 text-gray-200 border border-slate-700 shadow-lg shadow-black/10 transform active:scale-[.98]' 
-            : 'bg-slate-100 hover:bg-slate-200 text-slate-700 border border-slate-200 transform active:scale-[.98]',
-        navActive: 'bg-indigo-600 text-white shadow-md shadow-indigo-500/30',
+            ? 'bg-slate-800 hover:bg-slate-700 text-gray-200 border border-slate-700' 
+            : 'bg-slate-100 hover:bg-slate-200 text-slate-700 border border-slate-200',
+        
+        navActive: isUserAdmin 
+            ? 'bg-cyan-600 text-white shadow-md shadow-cyan-500/30' 
+            : 'bg-indigo-600 text-white shadow-md shadow-indigo-500/30',
+        
         navItem: darkMode 
             ? 'text-gray-300 hover:bg-slate-800/50 hover:text-white' 
             : 'text-slate-600 hover:bg-indigo-50 hover:text-indigo-700',
@@ -140,11 +153,12 @@ export default function App() {
                 setUserEmail(email);
                 const name = user.displayName || (user.isAnonymous ? `${ANONYMOUS_NAME_PREFIX}${user.uid.slice(0,4)}` : email.split('@')[0]);
                 setUserName(name);
-                setIsUserAdmin(email.toLowerCase() === ADMIN_EMAIL);
+                setIsUserAdmin(ADMIN_EMAILS.includes(email.toLowerCase()));
             } else {
                 setUserId(null);
                 setIsUserAdmin(false);
                 setUserEmail('');
+                setUserProfile({ bio: '', title: 'Student', photoURL: '' }); 
             }
             setIsAuthReady(true);
         });
@@ -166,6 +180,8 @@ export default function App() {
                         photoURL: data.photoURL || ''
                     });
                     if (data.displayName) setUserName(data.displayName);
+                } else {
+                    setUserProfile({ bio: '', title: 'Student', photoURL: '' });
                 }
             } catch (e) {
                 console.warn("Profile fetch warning:", e);
@@ -173,6 +189,16 @@ export default function App() {
         };
         fetchProfile();
     }, [db, userId, appId]);
+
+    useEffect(() => {
+        if (!db || !isUserAdmin) return;
+        const q = query(collection(db, 'artifacts', appId, 'users'));
+        const unsub = onSnapshot(q, (snap) => {
+            const users = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+            setAllUsers(users);
+        });
+        return () => unsub();
+    }, [db, isUserAdmin, appId]);
 
     const handleAction = async (action, ...args) => {
         try {
@@ -250,6 +276,29 @@ export default function App() {
             alertUser('success', 'Project Deleted');
         }
     };
+    
+    const deleteUser = async (id) => {
+        if (window.confirm("WARNING: This will delete the user's profile data. It will NOT delete their login account (Auth). Continue?")) {
+            try {
+                await deleteDoc(doc(db, 'artifacts', appId, 'users', id));
+                alertUser('success', 'User data deleted from directory.');
+            } catch (e) {
+                alertUser('error', 'Failed to delete user data.');
+            }
+        }
+    };
+
+    const updateProjectName = async (id, newName, newTeamName) => {
+        try {
+             await updateDoc(doc(db, 'artifacts', appId, 'public', 'data', 'projects', id), {
+                 name: newName,
+                 teamName: newTeamName
+             });
+             alertUser('success', 'Project details updated.');
+        } catch(e) {
+            alertUser('error', 'Failed update.');
+        }
+    };
 
     const alertUser = (type, msg) => {
         const el = document.getElementById('toast');
@@ -298,7 +347,7 @@ export default function App() {
     
     const ThemeSwitch = () => (
         <label htmlFor="theme-toggle" className="flex items-center cursor-pointer transition-colors duration-300">
-            <div className={`relative ${darkMode ? 'text-amber-400' : 'text-indigo-600'}`}>
+            <div className={`relative ${darkMode ? (isUserAdmin ? 'text-cyan-400' : 'text-amber-400') : 'text-indigo-600'}`}>
                 <input 
                     id="theme-toggle" 
                     type="checkbox" 
@@ -314,6 +363,22 @@ export default function App() {
         </label>
     );
 
+    const Footer = () => (
+        <footer className={`w-full py-8 mt-auto ${darkMode ? 'bg-slate-900 border-t border-slate-800 text-slate-400' : 'bg-slate-50 border-t border-slate-200 text-slate-500'}`}>
+            <div className="max-w-7xl mx-auto px-4 lg:px-8 flex flex-col md:flex-row justify-between items-center gap-4">
+                <div className="flex items-center gap-2">
+                    <img src="https://raw.githubusercontent.com/xsanchitgupta/acadex/refs/heads/main/logo.png" alt="Acadex" className="h-6 w-auto opacity-50 grayscale" />
+                    <span className="text-sm font-semibold">Acadex</span>
+                </div>
+                <p className="text-sm">© {new Date().getFullYear()} Acadex Project Suite. All rights reserved.</p>
+                <div className="flex gap-6 text-sm font-medium">
+                    <a href="#" className="hover:text-indigo-500 transition-colors">Privacy Policy</a>
+                    <a href="#" className="hover:text-indigo-500 transition-colors">Terms of Service</a>
+                    <a href="#" className="hover:text-indigo-500 transition-colors">Support</a>
+                </div>
+            </div>
+        </footer>
+    );
 
     const ProfileView = () => {
         const [formData, setFormData] = useState({
@@ -375,7 +440,7 @@ export default function App() {
             <div className="max-w-4xl mx-auto">
                 <h1 className={`text-3xl font-bold mb-8 ${theme.heading}`}>User Profile Settings</h1>
                 <Card className="overflow-hidden !p-0">
-                    <div className="relative h-40 bg-gradient-to-tr from-indigo-700 to-purple-800 rounded-t-3xl mb-16 shadow-inner">
+                    <div className={`relative h-40 rounded-t-3xl mb-16 shadow-inner ${isUserAdmin ? 'bg-gradient-to-tr from-cyan-700 to-teal-800' : 'bg-gradient-to-tr from-indigo-700 to-purple-800'}`}>
                         <div className="absolute -bottom-12 left-8">
                             <div className="relative group">
                                 <div className={`w-28 h-28 rounded-full border-4 ${darkMode ? 'border-gray-950' : 'border-white'} overflow-hidden bg-gray-200 flex items-center justify-center shadow-xl`}>
@@ -385,7 +450,7 @@ export default function App() {
                                         <span className="text-4xl font-bold text-gray-400">{formData.displayName?.charAt(0)}</span>
                                     )}
                                 </div>
-                                <label htmlFor="pic-upload" className="absolute bottom-0 right-0 bg-indigo-600 p-3 rounded-full text-white cursor-pointer shadow-lg hover:bg-indigo-700 transition-colors transform translate-y-1 translate-x-1">
+                                <label htmlFor="pic-upload" className={`absolute bottom-0 right-0 p-3 rounded-full text-white cursor-pointer shadow-lg transition-colors transform translate-y-1 translate-x-1 ${isUserAdmin ? 'bg-cyan-600 hover:bg-cyan-700' : 'bg-indigo-600 hover:bg-indigo-700'}`}>
                                     <CameraIcon className="w-5 h-5" />
                                     <input type="file" id="pic-upload" className="hidden" accept="image/*" onChange={handleImageUpload} />
                                 </label>
@@ -396,7 +461,7 @@ export default function App() {
                     <div className="px-8 pb-8 space-y-8">
                          <div className="pt-4">
                             <h2 className={`text-2xl font-bold ${theme.heading}`}>{formData.displayName}</h2>
-                            <p className={`text-indigo-500 font-medium`}>{formData.title}</p>
+                            <p className={`${isUserAdmin ? 'text-cyan-500' : 'text-indigo-500'} font-medium`}>{formData.title}</p>
                         </div>
 
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -803,6 +868,13 @@ export default function App() {
         const [loading, setLoading] = useState(false);
         const isCompleted = evaluation.status === 'Completed';
 
+        const handleGradeChange = (category, value) => {
+            const val = parseInt(value) || 0;
+            const newBreakdown = { ...evaluation.breakdown, [category]: val };
+            const total = (newBreakdown.innovation || 0) + (newBreakdown.execution || 0) + (newBreakdown.documentation || 0);
+            setEvaluation({ ...evaluation, breakdown: newBreakdown, score: total });
+        };
+
         const saveEvaluation = async () => {
             if (evaluation.score < 0 || evaluation.score > 100) {
                 return alertUser('error', 'Score must be between 0 and 100.');
@@ -824,8 +896,8 @@ export default function App() {
         return (
             <div className="max-w-6xl mx-auto space-y-8">
                 <div className="flex items-center justify-between mb-4">
-                     <button onClick={onBack} className={`text-base font-medium ${theme.textSecondary} hover:text-indigo-500 transition-colors flex items-center`}><span className="mr-2">←</span> Back to Projects</button>
-                     <h2 className={`text-3xl font-bold ${theme.heading}`}>Reviewing: <span className="text-indigo-500">{project.name}</span></h2>
+                     <button onClick={onBack} className={`text-base font-medium ${theme.textSecondary} hover:text-cyan-500 transition-colors flex items-center`}><span className="mr-2">←</span> Back to Projects</button>
+                     <h2 className={`text-3xl font-bold ${theme.heading}`}>Reviewing: <span className="text-cyan-500">{project.name}</span></h2>
                 </div>
                 
                 <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
@@ -833,14 +905,22 @@ export default function App() {
                         <h3 className={`text-xl font-bold ${theme.heading} border-b pb-3 ${darkMode ? 'border-gray-700' : 'border-gray-200'}`}>Grade Project</h3>
                         <div className="space-y-4">
                              <div className="space-y-2">
-                                <label className={`text-sm font-medium ${theme.textSecondary}`}>Score (0-100)</label>
-                                <Input 
-                                    type="number" 
-                                    min="0" max="100" 
-                                    value={evaluation.score} 
-                                    onChange={e => setEvaluation({...evaluation, score: parseInt(e.target.value) || 0})}
-                                />
+                                <label className={`text-sm font-medium ${theme.textSecondary}`}>Innovation (0-40)</label>
+                                <Input type="number" min="0" max="40" value={evaluation.breakdown?.innovation || 0} onChange={e => handleGradeChange('innovation', e.target.value)} />
                             </div>
+                            <div className="space-y-2">
+                                <label className={`text-sm font-medium ${theme.textSecondary}`}>Execution (0-30)</label>
+                                <Input type="number" min="0" max="30" value={evaluation.breakdown?.execution || 0} onChange={e => handleGradeChange('execution', e.target.value)} />
+                            </div>
+                            <div className="space-y-2">
+                                <label className={`text-sm font-medium ${theme.textSecondary}`}>Documentation (0-30)</label>
+                                <Input type="number" min="0" max="30" value={evaluation.breakdown?.documentation || 0} onChange={e => handleGradeChange('documentation', e.target.value)} />
+                            </div>
+                            <div className={`p-3 rounded-xl ${darkMode ? 'bg-slate-800' : 'bg-slate-100'} flex justify-between items-center`}>
+                                <span className="font-bold">Total Score</span>
+                                <span className="text-2xl font-black text-cyan-500">{evaluation.score}</span>
+                            </div>
+
                             <div className="space-y-2">
                                 <label className={`text-sm font-medium ${theme.textSecondary}`}>Overall Feedback</label>
                                 <textarea 
@@ -857,7 +937,7 @@ export default function App() {
                                     id="complete-check" 
                                     checked={isCompleted} 
                                     onChange={e => setEvaluation({...evaluation, status: e.target.checked ? 'Completed' : 'Pending'})}
-                                    className="w-4 h-4 text-indigo-600 border-gray-300 rounded focus:ring-indigo-500"
+                                    className="w-4 h-4 text-cyan-600 border-gray-300 rounded focus:ring-cyan-500"
                                 />
                                 <label htmlFor="complete-check" className={`text-sm font-medium ${theme.textPrimary}`}>Mark as Complete</label>
                             </div>
@@ -877,14 +957,14 @@ export default function App() {
                         
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                             <Card>
-                                <h3 className={`text-lg font-bold ${theme.heading} mb-4 flex items-center`}><FileIcon className="w-5 h-5 mr-2 text-indigo-500"/> Submitted Files</h3>
+                                <h3 className={`text-lg font-bold ${theme.heading} mb-4 flex items-center`}><FileIcon className="w-5 h-5 mr-2 text-cyan-500"/> Submitted Files</h3>
                                 <ul className="space-y-3">
                                     {(project.files || []).map((f, i) => (
                                         <li key={i} className={`flex items-center justify-between p-3 rounded-lg ${darkMode ? 'bg-gray-800' : 'bg-gray-50'}`}>
                                             <div className="overflow-hidden flex-1">
                                                 <div className="flex items-center justify-between">
                                                     <span className={`text-sm font-medium ${theme.textPrimary} truncate`}>{f.name}</span>
-                                                    <a href={f.url} target="_blank" rel="noopener noreferrer" className="ml-2 p-1 text-indigo-500 hover:bg-indigo-100 dark:hover:bg-indigo-900/30 rounded" title="Open Link">
+                                                    <a href={f.url} target="_blank" rel="noopener noreferrer" className="ml-2 p-1 text-cyan-500 hover:bg-cyan-100 dark:hover:bg-cyan-900/30 rounded" title="Open Link">
                                                         <LinkExternalIcon className="w-4 h-4" />
                                                     </a>
                                                 </div>
@@ -903,51 +983,142 @@ export default function App() {
     };
 
     const AdminPanel = () => {
+        const [tab, setTab] = useState('projects'); 
+        const [editProject, setEditProject] = useState(null); 
+
         if (adminSelectedProject) {
             return <AdminSubmissionView project={adminSelectedProject} onBack={() => setAdminSelectedProject(null)} />;
         }
+
         return (
-            <Card>
-                <h1 className={`text-4xl font-bold ${theme.heading} mb-6 flex items-center`}><ShieldIcon className="w-8 h-8 mr-3 text-rose-500"/> Admin Console</h1>
-                <div className="overflow-x-auto">
-                    <table className="w-full text-left">
-                        <thead>
-                            <tr className={`border-b ${darkMode ? 'border-gray-700 text-gray-300' : 'border-gray-200 text-gray-500'} text-sm uppercase`}>
-                                <th className="pb-3 pl-4">Project</th>
-                                <th className="pb-3 hidden sm:table-cell">Team</th>
-                                <th className="pb-3 hidden md:table-cell">Submission Status</th>
-                                <th className="pb-3">Evaluation</th>
-                                <th className="pb-3 text-right pr-4">Actions</th>
-                            </tr>
-                        </thead>
-                        <tbody className={`text-sm ${theme.textPrimary}`}>
-                            {projects.map(p => (
-                                <tr key={p.id} className={`border-b last:border-0 ${darkMode ? 'border-gray-800 hover:bg-gray-800/50' : 'border-gray-100 hover:bg-gray-50'} transition-colors`}>
-                                    <td className="py-4 pl-4 font-medium">{p.name}</td>
-                                    <td className={`py-4 hidden sm:table-cell ${theme.textSecondary}`}>{p.teamName}</td>
-                                    <td className="py-4 hidden md:table-cell">
-                                        <span className={`px-2 py-1 rounded-full text-xs font-semibold ${p.reportStatus === 'Submitted' ? 'bg-indigo-100 text-indigo-700 dark:bg-indigo-900/30 dark:text-indigo-300' : 'bg-gray-100 text-gray-700 dark:bg-gray-700 dark:text-gray-300'}`}>
-                                            {p.reportStatus || 'Draft'}
-                                        </span>
-                                    </td>
-                                    <td className="py-4">
-                                        <div className="flex items-center gap-2">
-                                            <span className={`px-2 py-1 rounded-full text-xs font-semibold ${p.evaluation?.status === 'Completed' ? 'bg-emerald-100 text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-300' : 'bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-300'}`}>{p.evaluation?.status || 'Pending'}</span>
-                                            {p.evaluation?.status === 'Completed' && <span className="font-bold text-indigo-500 text-sm">{p.evaluation.score}/100</span>}
-                                        </div>
-                                    </td>
-                                    <td className="py-4 text-right pr-4 flex justify-end space-x-2">
-                                        <button onClick={() => setAdminSelectedProject(p)} className="text-indigo-500 hover:text-white dark:hover:bg-indigo-600/50 hover:bg-indigo-100 p-2 rounded-xl transition-colors" title="View Submission & Grade">
-                                            <EyeIcon className="w-4 h-4" />
-                                        </button>
-                                        <button onClick={() => deleteProj(p.id)} className="text-rose-500 hover:text-white hover:bg-rose-500/20 dark:hover:bg-rose-900/20 p-2 rounded-xl transition-colors"><TrashIcon className="w-4 h-4" /></button>
-                                    </td>
-                                </tr>
-                            ))}
-                        </tbody>
-                    </table>
+            <div className="space-y-6">
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    <Card className="!p-4 flex items-center gap-4 border-l-4 border-cyan-500">
+                        <div className="p-3 bg-cyan-500/10 rounded-xl text-cyan-500"><DatabaseIcon className="w-6 h-6"/></div>
+                        <div><p className="text-2xl font-bold">{projects.length}</p><p className={`text-xs ${theme.textSecondary}`}>Total Projects</p></div>
+                    </Card>
+                    <Card className="!p-4 flex items-center gap-4 border-l-4 border-teal-500">
+                        <div className="p-3 bg-teal-500/10 rounded-xl text-teal-500"><UsersIcon className="w-6 h-6"/></div>
+                        <div><p className="text-2xl font-bold">{allUsers.length}</p><p className={`text-xs ${theme.textSecondary}`}>Registered Users</p></div>
+                    </Card>
+                    <Card className="!p-4 flex items-center gap-4 border-l-4 border-purple-500">
+                        <div className="p-3 bg-purple-500/10 rounded-xl text-purple-500"><EvaluateIcon className="w-6 h-6"/></div>
+                        <div><p className="text-2xl font-bold">{Math.round(projects.reduce((a,b) => a + (b.evaluation?.score||0), 0) / (projects.length || 1))}</p><p className={`text-xs ${theme.textSecondary}`}>Avg Score</p></div>
+                    </Card>
                 </div>
-            </Card>
+
+                <Card>
+                    <div className="flex justify-between items-center mb-6">
+                        <h1 className={`text-4xl font-bold ${theme.heading} flex items-center`}><ShieldIcon className="w-8 h-8 mr-3 text-cyan-500"/> Admin Console</h1>
+                        <div className="flex bg-gray-100 dark:bg-gray-800 rounded-lg p-1">
+                            <button onClick={() => setTab('projects')} className={`px-4 py-2 rounded-md text-sm font-medium transition-all ${tab === 'projects' ? 'bg-white dark:bg-gray-700 shadow text-cyan-600' : theme.textSecondary}`}>Projects</button>
+                            <button onClick={() => setTab('users')} className={`px-4 py-2 rounded-md text-sm font-medium transition-all ${tab === 'users' ? 'bg-white dark:bg-gray-700 shadow text-cyan-600' : theme.textSecondary}`}>Users</button>
+                        </div>
+                    </div>
+
+                    {tab === 'projects' && (
+                        <div className="overflow-x-auto">
+                            <table className="w-full text-left">
+                                <thead>
+                                    <tr className={`border-b ${darkMode ? 'border-gray-700 text-gray-300' : 'border-gray-200 text-gray-500'} text-sm uppercase`}>
+                                        <th className="pb-3 pl-4">Project</th>
+                                        <th className="pb-3 hidden sm:table-cell">Team</th>
+                                        <th className="pb-3 hidden md:table-cell">Submission Status</th>
+                                        <th className="pb-3">Evaluation</th>
+                                        <th className="pb-3 text-right pr-4">Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody className={`text-sm ${theme.textPrimary}`}>
+                                    {projects.map(p => (
+                                        <tr key={p.id} className={`border-b last:border-0 ${darkMode ? 'border-gray-800 hover:bg-gray-800/50' : 'border-gray-100 hover:bg-gray-50'} transition-colors`}>
+                                            <td className="py-4 pl-4 font-medium">
+                                                {p.name}
+                                                {showRawData && <div className="mt-1 text-[10px] font-mono text-gray-500 bg-gray-900/50 p-1 rounded max-w-xs truncate">{JSON.stringify(p)}</div>}
+                                            </td>
+                                            <td className={`py-4 hidden sm:table-cell ${theme.textSecondary}`}>{p.teamName}</td>
+                                            <td className="py-4 hidden md:table-cell">
+                                                <span className={`px-2 py-1 rounded-full text-xs font-semibold ${p.reportStatus === 'Submitted' ? 'bg-indigo-100 text-indigo-700 dark:bg-indigo-900/30 dark:text-indigo-300' : 'bg-gray-100 text-gray-700 dark:bg-gray-700 dark:text-gray-300'}`}>
+                                                    {p.reportStatus || 'Draft'}
+                                                </span>
+                                            </td>
+                                            <td className="py-4">
+                                                <div className="flex items-center gap-2">
+                                                    <span className={`px-2 py-1 rounded-full text-xs font-semibold ${p.evaluation?.status === 'Completed' ? 'bg-emerald-100 text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-300' : 'bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-300'}`}>{p.evaluation?.status || 'Pending'}</span>
+                                                    {p.evaluation?.status === 'Completed' && <span className="font-bold text-cyan-500 text-sm">{p.evaluation.score}/100</span>}
+                                                </div>
+                                            </td>
+                                            <td className="py-4 text-right pr-4 flex justify-end space-x-2">
+                                                <button onClick={() => setEditProject(p)} className="text-amber-500 hover:bg-amber-100 dark:hover:bg-amber-900/20 p-2 rounded-xl" title="Edit Project Name">
+                                                    <EditIcon className="w-4 h-4" />
+                                                </button>
+                                                <button onClick={() => setAdminSelectedProject(p)} className="text-cyan-500 hover:text-white dark:hover:bg-cyan-600/50 hover:bg-cyan-100 p-2 rounded-xl transition-colors" title="View Submission & Grade">
+                                                    <EyeIcon className="w-4 h-4" />
+                                                </button>
+                                                <button onClick={() => deleteProj(p.id)} className="text-rose-500 hover:text-white hover:bg-rose-500/20 dark:hover:bg-rose-900/20 p-2 rounded-xl transition-colors"><TrashIcon className="w-4 h-4" /></button>
+                                            </td>
+                                        </tr>
+                                    ))}
+                                </tbody>
+                            </table>
+                            <div className="mt-4 pt-4 border-t border-gray-700 flex justify-end">
+                                <button onClick={() => setShowRawData(!showRawData)} className={`flex items-center text-xs ${theme.textSecondary} hover:text-cyan-500`}>
+                                    <CodeIcon className="w-3 h-3 mr-1"/> {showRawData ? 'Hide Raw Data' : 'Inspect Raw Data'}
+                                </button>
+                            </div>
+                        </div>
+                    )}
+
+                    {tab === 'users' && (
+                        <div className="overflow-x-auto">
+                            <table className="w-full text-left">
+                                <thead>
+                                    <tr className={`border-b ${darkMode ? 'border-gray-700 text-gray-300' : 'border-gray-200 text-gray-500'} text-sm uppercase`}>
+                                        <th className="pb-3 pl-4">User Name</th>
+                                        <th className="pb-3">Email</th>
+                                        <th className="pb-3">Role</th>
+                                        <th className="pb-3 text-right pr-4">Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody className={`text-sm ${theme.textPrimary}`}>
+                                    {allUsers.map(u => (
+                                        <tr key={u.id} className={`border-b last:border-0 ${darkMode ? 'border-gray-800' : 'border-gray-100'}`}>
+                                            <td className="py-4 pl-4 flex items-center gap-3">
+                                                <div className="w-8 h-8 rounded-full bg-gray-700 flex items-center justify-center text-xs font-bold">{u.displayName?.charAt(0)}</div>
+                                                {u.displayName}
+                                            </td>
+                                            <td className={`py-4 ${theme.textSecondary}`}>{u.email}</td>
+                                            <td className="py-4"><span className="px-2 py-1 rounded text-xs bg-gray-800 text-gray-300">{u.title}</span></td>
+                                            <td className="py-4 text-right pr-4">
+                                                <button onClick={() => deleteUser(u.id)} className="text-rose-500 hover:bg-rose-900/20 p-2 rounded-xl"><TrashIcon className="w-4 h-4" /></button>
+                                            </td>
+                                        </tr>
+                                    ))}
+                                </tbody>
+                            </table>
+                        </div>
+                    )}
+                </Card>
+                
+                {editProject && (
+                    <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 p-4">
+                        <Card className="w-full max-w-md space-y-4">
+                            <h3 className={`text-xl font-bold ${theme.heading}`}>Edit Project</h3>
+                            <div>
+                                <label className="text-xs font-medium mb-1 block">Project Name</label>
+                                <Input value={editProject.name} onChange={e => setEditProject({...editProject, name: e.target.value})} />
+                            </div>
+                            <div>
+                                <label className="text-xs font-medium mb-1 block">Team Name</label>
+                                <Input value={editProject.teamName} onChange={e => setEditProject({...editProject, teamName: e.target.value})} />
+                            </div>
+                            <div className="flex justify-end gap-2 mt-4">
+                                <Button variant="secondary" onClick={() => setEditProject(null)}>Cancel</Button>
+                                <Button onClick={() => { updateProjectName(editProject.id, editProject.name, editProject.teamName); setEditProject(null); }}>Save</Button>
+                            </div>
+                        </Card>
+                    </div>
+                )}
+            </div>
         );
     };
 
@@ -978,28 +1149,29 @@ export default function App() {
 
         return (
             <div className="space-y-8">
-                <Card className="flex flex-col md:flex-row gap-6 p-8 bg-gradient-to-br from-indigo-700 to-purple-800 !border-none text-white relative overflow-hidden h-60 md:h-72 items-center">
+                <Card className={`flex flex-col md:flex-row gap-6 p-8 ${isUserAdmin ? 'bg-gradient-to-br from-cyan-700 to-teal-800' : 'bg-gradient-to-br from-indigo-700 to-purple-800'} !border-none text-white relative overflow-hidden h-60 md:h-72 items-center`}>
                     <div className="absolute right-0 bottom-0 opacity-10 transform translate-y-1/3 translate-x-1/4"><DatabaseIcon width="300" height="300" /></div>
                     
                     <div className="relative z-10 flex-1">
                         <h2 className="text-4xl font-extrabold mb-2">Hello, {userName}!</h2>
-                        <p className="text-indigo-200 text-lg">
+                        <p className={`${isUserAdmin ? 'text-cyan-200' : 'text-indigo-200'} text-lg`}>
                             {userTeam 
                                 ? (isTeamActive ? `Tracking active project: ${userTeam.name}` : `Waiting for team assembly...`) 
-                                : 'Ready to start your next academic project?'}
+                                : (isUserAdmin ? 'Welcome to the Admin Control Center.' : 'Ready to start your next academic project?')}
                         </p>
-                        {!userTeam && <Button onClick={() => setCurrentView(VIEWS.REGISTRATION)} className="mt-8 bg-white text-indigo-700 hover:bg-indigo-50 shadow-none hover:shadow-lg">Start Project Now <PlusIcon className="w-5 h-5"/></Button>}
+                        {!userTeam && !isUserAdmin && <Button onClick={() => setCurrentView(VIEWS.REGISTRATION)} className="mt-8 bg-white text-indigo-700 hover:bg-indigo-50 shadow-none hover:shadow-lg">Start Project Now <PlusIcon className="w-5 h-5"/></Button>}
                         {userTeam && isTeamActive && <Button onClick={() => setCurrentView(VIEWS.TRACKING)} className="mt-8 bg-white text-indigo-700 hover:bg-indigo-50 shadow-none hover:shadow-lg">Go to Project <ProgressIcon className="w-5 h-5"/></Button>}
+                         {isUserAdmin && <Button onClick={() => setCurrentView(VIEWS.ADMIN)} className="mt-8 bg-white text-cyan-700 hover:bg-cyan-50 shadow-none hover:shadow-lg">Open Admin Console <ShieldIcon className="w-5 h-5"/></Button>}
                     </div>
 
                     <div className="hidden md:grid grid-cols-2 gap-4 w-full md:w-auto md:space-y-0 relative z-10">
                         <div className="p-4 bg-white/10 rounded-xl backdrop-blur-sm text-center">
                             <h3 className="text-3xl font-bold">{projects.length}</h3>
-                            <p className="text-xs text-indigo-200">Total Projects</p>
+                            <p className={`text-xs ${isUserAdmin ? 'text-cyan-200' : 'text-indigo-200'}`}>Total Projects</p>
                         </div>
                         <div className="p-4 bg-white/10 rounded-xl backdrop-blur-sm text-center">
                             <h3 className="text-3xl font-bold">{projects.reduce((a,b)=>a + (b.members?.length||0),0)}</h3>
-                            <p className="text-xs text-indigo-200">Total Students</p>
+                            <p className={`text-xs ${isUserAdmin ? 'text-cyan-200' : 'text-indigo-200'}`}>Total Students</p>
                         </div>
                     </div>
                 </Card>
@@ -1114,7 +1286,7 @@ export default function App() {
                         {userProfile.photoURL ? (
                              <img src={userProfile.photoURL} alt="Profile" className="w-10 h-10 rounded-full object-cover border-2 border-indigo-500 shadow-md" />
                         ) : (
-                            <div className="w-10 h-10 rounded-full bg-gradient-to-tr from-indigo-500 to-purple-500 flex items-center justify-center text-white text-base font-bold border-2 border-indigo-500 shadow-md">
+                            <div className={`w-10 h-10 rounded-full bg-gradient-to-tr ${isUserAdmin ? 'from-cyan-500 to-teal-500' : 'from-indigo-500 to-purple-500'} flex items-center justify-center text-white text-base font-bold border-2 border-indigo-500 shadow-md`}>
                                 {userName.charAt(0).toUpperCase()}
                             </div>
                         )}
@@ -1194,6 +1366,23 @@ export default function App() {
                                     <div className="text-6xl font-black text-transparent bg-clip-text bg-gradient-to-r from-indigo-500 to-purple-600 mb-6">
                                         {userTeam.evaluation.score}/100
                                     </div>
+
+                                    {userTeam.evaluation.breakdown && (
+                                        <div className="grid grid-cols-3 gap-4 mb-8 max-w-md mx-auto">
+                                            <div className="p-3 bg-gray-800/50 rounded-lg">
+                                                <div className="text-xs text-gray-400 uppercase">Innovation</div>
+                                                <div className="text-xl font-bold text-white">{userTeam.evaluation.breakdown.innovation || 0}</div>
+                                            </div>
+                                            <div className="p-3 bg-gray-800/50 rounded-lg">
+                                                <div className="text-xs text-gray-400 uppercase">Execution</div>
+                                                <div className="text-xl font-bold text-white">{userTeam.evaluation.breakdown.execution || 0}</div>
+                                            </div>
+                                            <div className="p-3 bg-gray-800/50 rounded-lg">
+                                                <div className="text-xs text-gray-400 uppercase">Docs</div>
+                                                <div className="text-xl font-bold text-white">{userTeam.evaluation.breakdown.documentation || 0}</div>
+                                            </div>
+                                        </div>
+                                    )}
                                     
                                     <div className={`text-left p-6 rounded-xl ${darkMode ? 'bg-gray-800 border border-gray-700' : 'bg-white border border-gray-200'}`}>
                                         <p className={`text-sm font-bold ${theme.textSecondary} uppercase mb-3 border-b pb-2 ${darkMode ? 'border-gray-700' : 'border-gray-200'}`}>Instructor Feedback</p>
@@ -1210,6 +1399,7 @@ export default function App() {
                     )}
                 </div>
             </main>
+            <Footer />
             <div id="toast" className="fixed top-4 right-4 z-50 transition-all duration-500 transform translate-y-20 opacity-0"></div>
         </div>
     );
