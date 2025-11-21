@@ -26,7 +26,6 @@ import {
     deleteDoc
 } from 'firebase/firestore';
 
-// --- Icons (Lucide Styled) ---
 const Icon = ({ children, className }) => (
     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}>{children}</svg>
 );
@@ -58,15 +57,12 @@ const HomeIcon = (props) => <Icon {...props}><path d="m3 9 9-7 9 7v11a2 2 0 0 1-
 const MenuIcon = (props) => <Icon {...props}><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="18" x2="21" y2="18"/></Icon>;
 const XIcon = (props) => <Icon {...props}><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></Icon>;
 
-
-// --- Configuration ---
 const VIEWS = { DASHBOARD: 'Dashboard', REGISTRATION: 'Registration', TRACKING: 'Progress', REPORTS: 'Reports', DATABASE: 'Projects', EVALUATION: 'Evaluation', ADMIN: 'Admin', PROFILE: 'Profile' };
 const AUTH_VIEWS = { INIT: 'Initial', LOGIN: 'Login', SIGNUP: 'SignUp' };
 const INITIAL_EVALUATION = { score: 0, feedback: "Awaiting review.", status: "Pending" };
-const ADMIN_EMAIL = "admin@protrack.edu";
+const ADMIN_EMAIL = "admin@acadex.edu";
 const ANONYMOUS_NAME_PREFIX = "Guest_";
 
-// --- Firebase Setup (Ensure this config is correct for your project) ---
 const appId = typeof __app_id !== 'undefined' ? __app_id : 'default-app-id';
 const firebaseConfig = {
   apiKey: "AIzaSyBVFyZfJr6fiYEM9lUf4IaknxzVkuIXGRM",
@@ -97,33 +93,25 @@ export default function App() {
     const [adminSelectedProject, setAdminSelectedProject] = useState(null);
     const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
-
-    // --- Modern Theme Engine (Refined Top Nav Layout) ---
     const toggleTheme = () => setDarkMode(!darkMode);
     
     const theme = {
-        // Core colors for Slate/Indigo Palette
         appBg: darkMode ? 'bg-gray-950' : 'bg-slate-50',
         navBg: darkMode ? 'bg-gray-900/95 backdrop-blur-xl border-b border-slate-800' : 'bg-white/95 backdrop-blur-xl border-b border-slate-200',
         textPrimary: darkMode ? 'text-gray-50' : 'text-slate-900',
         textSecondary: darkMode ? 'text-gray-400' : 'text-slate-500',
         heading: darkMode ? 'text-white' : 'text-slate-900',
         
-        // Enhanced Card: Sharper corners and distinct shadow contrast
         card: darkMode 
             ? 'bg-gray-900/50 border border-slate-800 shadow-2xl shadow-black/30' 
             : 'bg-white border border-slate-200 shadow-xl shadow-slate-200/50',
-        // Sleeker Input fields
         input: darkMode 
             ? 'bg-slate-800 border-slate-700 text-white placeholder-gray-500 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500' 
             : 'bg-white border-slate-300 text-slate-900 placeholder-slate-400 focus:border-indigo-600 focus:ring-2 focus:ring-indigo-600',
-        // Stronger Gradient for Primary Button
         accentPrimary: 'bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 text-white shadow-xl shadow-indigo-500/40 transform active:scale-[.98]',
-        // Refined Secondary Button
         accentSecondary: darkMode 
             ? 'bg-slate-800 hover:bg-slate-700 text-gray-200 border border-slate-700 shadow-lg shadow-black/10 transform active:scale-[.98]' 
             : 'bg-slate-100 hover:bg-slate-200 text-slate-700 border border-slate-200 transform active:scale-[.98]',
-        // Active Nav item is a distinct pill with subtle shadow
         navActive: 'bg-indigo-600 text-white shadow-md shadow-indigo-500/30',
         navItem: darkMode 
             ? 'text-gray-300 hover:bg-slate-800/50 hover:text-white' 
@@ -134,7 +122,6 @@ export default function App() {
         danger: 'text-rose-500'
     };
 
-    // --- Init & Auth ---
     useEffect(() => {
         if (Object.keys(firebaseConfig).length === 0) { setError("Config missing."); return; }
         try {
@@ -164,7 +151,6 @@ export default function App() {
         return () => unsubscribe();
     }, [auth]);
 
-    // --- User Profile Sync ---
     useEffect(() => {
         if (!db || !userId) return;
         const userDocRef = doc(db, 'artifacts', appId, 'users', userId);
@@ -188,8 +174,6 @@ export default function App() {
         fetchProfile();
     }, [db, userId, appId]);
 
-
-    // --- Handlers ---
     const handleAction = async (action, ...args) => {
         try {
             if (action === 'login') await signInWithEmailAndPassword(auth, ...args);
@@ -202,7 +186,6 @@ export default function App() {
         } catch (e) { alertUser('error', e.message); }
     };
 
-    // --- Data Sync ---
     useEffect(() => {
         if (!db || !userId) return;
         const q = query(collection(db, 'artifacts', appId, 'public', 'data', 'projects'));
@@ -218,7 +201,6 @@ export default function App() {
         return () => unsub();
     }, [db, userId, appId, userEmail]);
 
-    // --- Logic Functions ---
     const registerTeam = async (tName, pName, memberEmails) => {
         if (!userEmail) return alertUser('error', 'You must have an email to register a team.');
         if (projects.some(p => p.name.toLowerCase() === pName.toLowerCase())) return alertUser('error', 'Project name taken');
@@ -285,16 +267,13 @@ export default function App() {
         return userTeam && userTeam.members.every(m => m.status === 'accepted');
     }, [userTeam]);
 
-    // --- UI Components ---
     const Card = ({ children, className = "" }) => (
-        // Enhanced Card: More rounded corners (3xl) and a more defined hover effect
         <div className={`${theme.card} rounded-3xl p-6 transition-all duration-300 ${className}`}>{children}</div>
     );
 
     const Button = ({ children, variant = "primary", onClick, className = "", ...props }) => (
         <button 
             onClick={onClick} 
-            // Slightly increased padding and stronger focus ring
             className={`px-6 py-3 rounded-xl font-semibold transition-all duration-300 flex items-center justify-center space-x-2 disabled:opacity-50 disabled:cursor-not-allowed ${variant === 'primary' ? theme.accentPrimary : theme.accentSecondary} ${className}`} 
             {...props}
         >
@@ -303,7 +282,6 @@ export default function App() {
     );
 
     const Input = (props) => (
-        // Sharper focus style and border color
         <input {...props} className={`w-full px-4 py-3 rounded-xl transition-all outline-none border ${theme.input}`} />
     );
     
@@ -336,7 +314,6 @@ export default function App() {
     );
 
 
-    // --- Views ---
     const ProfileView = () => {
         const [formData, setFormData] = useState({
             displayName: userName,
@@ -349,7 +326,7 @@ export default function App() {
         const handleImageUpload = (e) => {
             const file = e.target.files[0];
             if (file) {
-                if (file.size > 1048576) { // 1MB limit
+                if (file.size > 1048576) { 
                     alertUser('error', 'Image size must be less than 1MB');
                     return;
                 }
@@ -368,7 +345,6 @@ export default function App() {
                     const profileUpdates = {
                         displayName: formData.displayName
                     };
-                    // Only update profile if photoURL is a standard URL (not Base64 data)
                     if (formData.photoURL && !formData.photoURL.startsWith('data:')) {
                          profileUpdates.photoURL = formData.photoURL;
                     }
@@ -398,7 +374,6 @@ export default function App() {
             <div className="max-w-4xl mx-auto">
                 <h1 className={`text-3xl font-bold mb-8 ${theme.heading}`}>User Profile Settings</h1>
                 <Card className="overflow-hidden !p-0">
-                    {/* Header Banner */}
                     <div className="relative h-40 bg-gradient-to-tr from-indigo-700 to-purple-800 rounded-t-3xl mb-16 shadow-inner">
                         <div className="absolute -bottom-12 left-8">
                             <div className="relative group">
@@ -409,7 +384,6 @@ export default function App() {
                                         <span className="text-4xl font-bold text-gray-400">{formData.displayName?.charAt(0)}</span>
                                     )}
                                 </div>
-                                {/* Image upload overlay */}
                                 <label htmlFor="pic-upload" className="absolute bottom-0 right-0 bg-indigo-600 p-3 rounded-full text-white cursor-pointer shadow-lg hover:bg-indigo-700 transition-colors transform translate-y-1 translate-x-1">
                                     <CameraIcon className="w-5 h-5" />
                                     <input type="file" id="pic-upload" className="hidden" accept="image/*" onChange={handleImageUpload} />
@@ -465,10 +439,10 @@ export default function App() {
             <div className={`min-h-screen flex items-center justify-center p-4 ${theme.appBg} transition-colors duration-500`}>
                 <Card className="w-full max-w-md space-y-8 !p-12">
                     <div className="text-center">
-                        <div className="w-16 h-16 bg-gradient-to-r from-indigo-600 to-purple-600 rounded-2xl mx-auto flex items-center justify-center mb-4 shadow-xl shadow-indigo-500/30">
-                            <TeamIcon className="w-8 h-8 text-white" />
+                        <div className="w-32 h-16 mx-auto flex items-center justify-center mb-4">
+                            <img src="logo.png" alt="Acadex" className="h-full w-auto object-contain" />
                         </div>
-                        <h1 className={`text-3xl font-extrabold ${theme.heading}`}>ProTrack.ai</h1>
+                        <h1 className={`text-3xl font-extrabold ${theme.heading}`}>Acadex</h1>
                         <p className={`mt-2 ${theme.textSecondary}`}>Academic Project Management Suite</p>
                     </div>
 
@@ -708,41 +682,36 @@ export default function App() {
     const ReportView = () => {
         if (!userTeam || !isTeamActive) return <ProjectRequiredMessage viewName={VIEWS.REPORTS} />;
         const [content, setContent] = useState(userTeam.report || '');
-        const [linkInput, setLinkInput] = useState('');
-        const [resources, setResources] = useState(userTeam.resources || []);
         const [files, setFiles] = useState(userTeam.files || []);
+        const [fileNameInput, setFileNameInput] = useState('');
+        const [fileLinkInput, setFileLinkInput] = useState('');
         const reportStatus = userTeam.reportStatus || 'Draft';
         const isSubmitted = reportStatus === 'Submitted';
 
-        // Sync local state with team data changes to ensure all members see the same files
         useEffect(() => {
             if (userTeam) {
                 setContent(userTeam.report || '');
-                setResources(userTeam.resources || []);
                 setFiles(userTeam.files || []);
             }
         }, [userTeam]);
 
-        const handleFileUpload = (e) => {
-            if (isSubmitted) return;
-            // NOTE: File upload is simulated. In a real application, you'd upload to Firebase Storage here and get the URL.
-            const newFiles = Array.from(e.target.files).map(f => ({ name: f.name, size: (f.size/1024).toFixed(2)+' KB', date: new Date().toLocaleDateString(), url: "#" })); 
-            const updatedFiles = [...files, ...newFiles];
-            setFiles(updatedFiles);
-            // Auto-save files to allow real-time sync
-            updateReport(content, resources, updatedFiles, 'Draft');
-            alertUser('info', 'File metadata saved (simulated upload)');
-        };
+        const addFileLink = () => {
+             if (isSubmitted) return;
+             if (!fileNameInput || !fileLinkInput) return alertUser('error', 'File Name and Valid Link required');
+             if (!fileLinkInput.startsWith('http://') && !fileLinkInput.startsWith('https://')) return alertUser('error', 'Link must start with http/https');
 
-        const addResource = () => {
-            if(linkInput && !isSubmitted && (linkInput.startsWith('http://') || linkInput.startsWith('https://'))) { 
-                const newResources = [...resources, { url: linkInput, type: 'link' }];
-                setResources(newResources);
-                setLinkInput('');
-                updateReport(content, newResources, files, 'Draft');
-            } else if (!isSubmitted) {
-                alertUser('error', 'Please enter a valid URL (starting with http/https).');
-            }
+             const newFile = { 
+                 name: fileNameInput, 
+                 url: fileLinkInput, 
+                 date: new Date().toLocaleDateString(), 
+                 size: 'Link' 
+             };
+             const updatedFiles = [...files, newFile];
+             setFiles(updatedFiles);
+             updateReport(content, [], updatedFiles, 'Draft'); 
+             setFileNameInput('');
+             setFileLinkInput('');
+             alertUser('success', 'File link added');
         };
 
         return (
@@ -770,14 +739,24 @@ export default function App() {
                     <div className="space-y-6">
                         <Card>
                             <h3 className={`text-lg font-bold ${theme.heading} mb-4 flex items-center`}><FileIcon className="w-5 h-5 mr-2 text-indigo-500"/> Supporting Files</h3>
-                            <p className={`text-xs ${theme.textSecondary} mb-4`}>Simulated file upload for document metadata.</p>
+                            <p className={`text-xs ${theme.textSecondary} mb-4`}>Submit Google Drive or MediaFire links for your project files.</p>
                             {!isSubmitted && (
-                                <div className={`border-2 border-dashed rounded-xl p-6 text-center cursor-pointer transition-colors mb-4 ${darkMode ? 'border-gray-700 hover:border-indigo-500 bg-gray-800/20' : 'border-gray-300 hover:border-indigo-500 bg-gray-50'}`}>
-                                    <input type="file" multiple onChange={handleFileUpload} className="hidden" id="file-upload" />
-                                    <label htmlFor="file-upload" className="cursor-pointer block">
-                                        <div className="mx-auto w-10 h-10 bg-indigo-100 text-indigo-600 rounded-full flex items-center justify-center mb-2 shadow-lg"><PlusIcon className="w-5 h-5"/></div>
-                                        <p className={`text-xs font-medium ${theme.textPrimary}`}>Click to Upload (Simulated)</p>
-                                    </label>
+                                <div className={`border-2 border-dashed rounded-xl p-4 transition-colors mb-4 space-y-3 ${darkMode ? 'border-gray-700 bg-gray-800/20' : 'border-gray-300 bg-gray-50'}`}>
+                                    <Input 
+                                        value={fileNameInput} 
+                                        onChange={e => setFileNameInput(e.target.value)} 
+                                        placeholder="File Name (e.g., Final Presentation)" 
+                                        className="text-sm"
+                                    />
+                                    <Input 
+                                        value={fileLinkInput} 
+                                        onChange={e => setFileLinkInput(e.target.value)} 
+                                        placeholder="File Link (GDrive/MediaFire)" 
+                                        className="text-sm"
+                                    />
+                                    <Button onClick={addFileLink} className="w-full py-2 text-sm">
+                                        <PlusIcon className="w-4 h-4 mr-1"/> Add File Link
+                                    </Button>
                                 </div>
                             )}
                             <ul className="space-y-3 max-h-60 overflow-y-auto pr-2">{files.map((f, i) => (
@@ -785,9 +764,8 @@ export default function App() {
                                     <div className="overflow-hidden flex-1">
                                         <div className="flex items-center">
                                             <p className={`text-sm font-medium ${theme.textPrimary} truncate flex-1`}>{f.name}</p>
-                                            {/* Dedicated Download Button for Team Members */}
-                                            <a href={f.url} target="_blank" rel="noopener noreferrer" className={`ml-2 p-1 rounded hover:bg-indigo-100 dark:hover:bg-indigo-900/30 text-indigo-500 transition-colors`} title="Download File">
-                                                <DownloadIcon className="w-4 h-4" />
+                                            <a href={f.url} target="_blank" rel="noopener noreferrer" className={`ml-2 p-1 rounded hover:bg-indigo-100 dark:hover:bg-indigo-900/30 text-indigo-500 transition-colors`} title="Open Link">
+                                                <LinkExternalIcon className="w-4 h-4" />
                                             </a>
                                         </div>
                                         <p className={`text-[10px] ${theme.textSecondary}`}>{f.size} | {f.date}</p>
@@ -795,41 +773,21 @@ export default function App() {
                                     {!isSubmitted && <button onClick={() => {
                                         const newFiles = files.filter((_, idx) => idx !== i);
                                         setFiles(newFiles);
-                                        updateReport(content, resources, newFiles, 'Draft');
+                                        updateReport(content, [], newFiles, 'Draft');
                                     }} className="text-gray-400 hover:text-rose-500 ml-2"><TrashIcon className="w-4 h-4"/></button>}
-                                </li>
-                            ))}</ul>
-                        </Card>
-                        <Card>
-                            <h3 className={`text-lg font-bold ${theme.heading} mb-4 flex items-center`}><LinkIcon className="w-5 h-5 mr-2 text-purple-500"/> External Resources</h3>
-                            {!isSubmitted && (
-                                <div className="flex space-x-2 mb-4">
-                                    <Input value={linkInput} onChange={e => setLinkInput(e.target.value)} placeholder="https://repository-link.com" className="flex-1 text-sm" />
-                                    <Button onClick={addResource} className={`p-3 rounded-xl shadow-none`}><PlusIcon className="w-4 h-4"/></Button>
-                                </div>
-                            )}
-                            <ul className="space-y-3">{resources.map((r, i) => (
-                                <li key={i} className={`flex items-center justify-between p-2 rounded-lg ${darkMode ? 'hover:bg-gray-800' : 'hover:bg-gray-50'} transition-colors`}>
-                                    <a href={r.url} target="_blank" rel="noreferrer" className="text-blue-500 truncate hover:underline text-sm flex-1">{r.url}</a>
-                                    {!isSubmitted && <button onClick={() => {
-                                        const newRes = resources.filter((_, idx) => idx !== i);
-                                        setResources(newRes);
-                                        updateReport(content, newRes, files, 'Draft');
-                                    }} className="text-gray-400 hover:text-rose-500 ml-2"><TrashIcon className="w-3 h-3"/></button>}
                                 </li>
                             ))}</ul>
                         </Card>
                     </div>
                 </div>
-                {/* Sticky Action Bar */}
                 {!isSubmitted && (
                     <div className={`sticky bottom-0 p-5 mt-8 ${theme.card} border-t backdrop-blur-lg rounded-2xl flex justify-between items-center z-20`}>
                         <p className={`text-sm ${theme.textSecondary}`}>Last saved: {new Date().toLocaleTimeString()}</p>
                         <div className="flex space-x-4">
-                            <Button variant="secondary" onClick={() => updateReport(content, resources, files, 'Draft')}>
+                            <Button variant="secondary" onClick={() => updateReport(content, [], files, 'Draft')}>
                                 <SaveIcon className="w-5 h-5 mr-2" /> Save Draft
                             </Button>
-                            <Button onClick={() => updateReport(content, resources, files, 'Submitted')}>
+                            <Button onClick={() => updateReport(content, [], files, 'Submitted')}>
                                 <SendIcon className="w-5 h-5 mr-2" /> Submit Final
                             </Button>
                         </div>
@@ -839,7 +797,6 @@ export default function App() {
         );
     };
 
-    // New Admin Submission View Component
     const AdminSubmissionView = ({ project, onBack }) => {
         const [evaluation, setEvaluation] = useState(project.evaluation || INITIAL_EVALUATION);
         const [loading, setLoading] = useState(false);
@@ -871,7 +828,6 @@ export default function App() {
                 </div>
                 
                 <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
-                    {/* Evaluation Panel */}
                     <Card className="lg:col-span-1 space-y-6 h-fit sticky top-24">
                         <h3 className={`text-xl font-bold ${theme.heading} border-b pb-3 ${darkMode ? 'border-gray-700' : 'border-gray-200'}`}>Grade Project</h3>
                         <div className="space-y-4">
@@ -910,7 +866,6 @@ export default function App() {
                         </Button>
                     </Card>
 
-                    {/* Submission Content */}
                     <div className="lg:col-span-3 space-y-8">
                         <Card className="space-y-4">
                             <h3 className={`text-2xl font-bold ${theme.heading} border-b pb-3 ${darkMode ? 'border-gray-700' : 'border-gray-200'}`}>Executive Summary</h3>
@@ -928,9 +883,8 @@ export default function App() {
                                             <div className="overflow-hidden flex-1">
                                                 <div className="flex items-center justify-between">
                                                     <span className={`text-sm font-medium ${theme.textPrimary} truncate`}>{f.name}</span>
-                                                    {/* Explicit Download for Admin */}
-                                                    <a href={f.url} target="_blank" rel="noopener noreferrer" className="ml-2 p-1 text-indigo-500 hover:bg-indigo-100 dark:hover:bg-indigo-900/30 rounded" title="Download">
-                                                        <DownloadIcon className="w-4 h-4" />
+                                                    <a href={f.url} target="_blank" rel="noopener noreferrer" className="ml-2 p-1 text-indigo-500 hover:bg-indigo-100 dark:hover:bg-indigo-900/30 rounded" title="Open Link">
+                                                        <LinkExternalIcon className="w-4 h-4" />
                                                     </a>
                                                 </div>
                                                 <p className={`text-[10px] ${theme.textSecondary}`}>{f.size} • {f.date}</p>
@@ -938,17 +892,6 @@ export default function App() {
                                         </li>
                                     ))}
                                     {(!project.files || project.files.length === 0) && <p className={`text-sm ${theme.textSecondary}`}>No files uploaded.</p>}
-                                </ul>
-                            </Card>
-                            <Card>
-                                <h3 className={`text-lg font-bold ${theme.heading} mb-4 flex items-center`}><LinkIcon className="w-5 h-5 mr-2 text-purple-500"/> External Links</h3>
-                                 <ul className="space-y-3">
-                                    {(project.resources || []).map((r, i) => (
-                                        <li key={i} className={`flex items-center justify-between p-2 rounded-lg ${darkMode ? 'hover:bg-gray-800' : 'hover:bg-gray-50'}`}>
-                                            <a href={r.url} target="_blank" rel="noreferrer" className="text-blue-500 truncate hover:underline text-sm flex-1">{r.url}</a>
-                                        </li>
-                                    ))}
-                                     {(!project.resources || project.resources.length === 0) && <p className={`text-sm ${theme.textSecondary}`}>No external links provided.</p>}
                                 </ul>
                             </Card>
                         </div>
@@ -1008,7 +951,6 @@ export default function App() {
     };
 
     const Dashboard = () => {
-        // Pending Invite View
         if (userTeam) {
             const myStatus = userTeam.members.find(m => m.email === userEmail || m.id === userId)?.status;
             
@@ -1033,12 +975,9 @@ export default function App() {
             }
         }
 
-        // Standard Dashboard
         return (
             <div className="space-y-8">
-                {/* Hero Card - Highly Visual */}
                 <Card className="flex flex-col md:flex-row gap-6 p-8 bg-gradient-to-br from-indigo-700 to-purple-800 !border-none text-white relative overflow-hidden h-60 md:h-72 items-center">
-                    {/* Decorative background element */}
                     <div className="absolute right-0 bottom-0 opacity-10 transform translate-y-1/3 translate-x-1/4"><DatabaseIcon width="300" height="300" /></div>
                     
                     <div className="relative z-10 flex-1">
@@ -1052,7 +991,6 @@ export default function App() {
                         {userTeam && isTeamActive && <Button onClick={() => setCurrentView(VIEWS.TRACKING)} className="mt-8 bg-white text-indigo-700 hover:bg-indigo-50 shadow-none hover:shadow-lg">Go to Project <ProgressIcon className="w-5 h-5"/></Button>}
                     </div>
 
-                    {/* Stats Summary - Desktop/Tablet */}
                     <div className="hidden md:grid grid-cols-2 gap-4 w-full md:w-auto md:space-y-0 relative z-10">
                         <div className="p-4 bg-white/10 rounded-xl backdrop-blur-sm text-center">
                             <h3 className="text-3xl font-bold">{projects.length}</h3>
@@ -1067,7 +1005,6 @@ export default function App() {
 
                 {userTeam && (
                     <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-                        {/* Project Status & Progress */}
                         <Card className="lg:col-span-2">
                             <div className="flex justify-between items-start mb-6">
                                 <div>
@@ -1102,7 +1039,6 @@ export default function App() {
                             </div>
                         </Card>
 
-                        {/* Team Roster with Status */}
                         <Card>
                             <h3 className={`text-lg font-bold ${theme.heading} mb-4 border-b pb-3 ${darkMode ? 'border-gray-700' : 'border-gray-200'}`}>Team Roster</h3>
                             <ul className="space-y-4">
@@ -1127,7 +1063,6 @@ export default function App() {
         );
     };
 
-    // --- Main Render ---
     if (error) return <div className="flex items-center justify-center min-h-screen bg-rose-900 text-rose-300 p-4 font-mono text-center">Initialization Error: {error}</div>;
     if (!isAuthReady) return <div className={`flex items-center justify-center min-h-screen ${theme.appBg} ${theme.textPrimary}`}>
         <div className="w-8 h-8 border-4 border-indigo-500 border-t-transparent rounded-full animate-spin"></div>
@@ -1138,21 +1073,18 @@ export default function App() {
     return (
         <div className={`flex flex-col min-h-screen ${theme.appBg} ${theme.textPrimary} transition-colors duration-500 font-sans selection:bg-indigo-500 selection:text-white`}>
             
-            {/* Top Navigation Bar */}
             <header className={`fixed top-0 w-full z-30 ${theme.navBg} px-4 lg:px-8 py-3 flex items-center justify-between shadow-lg`}>
                 
-                {/* Logo & Mobile Menu Button */}
                 <div className="flex items-center gap-4">
                     <button onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)} className={`md:hidden p-2 rounded-lg ${theme.navItem}`}>
                         {isMobileMenuOpen ? <XIcon className="w-6 h-6" /> : <MenuIcon className="w-6 h-6" />}
                     </button>
                     <div className="flex items-center gap-3">
-                        <div className="w-10 h-10 bg-gradient-to-br from-indigo-500 to-purple-500 rounded-xl flex items-center justify-center text-white font-bold text-lg shadow-xl shadow-indigo-500/30 flex-shrink-0">P</div>
-                        <span className={`font-extrabold text-xl ${theme.heading}`}>ProTrack.ai</span>
+                        <img src="logo.png" alt="Acadex" className="h-10 w-auto object-contain" />
+                        <span className={`font-extrabold text-xl ${theme.heading}`}>Acadex</span>
                     </div>
                 </div>
 
-                {/* Desktop Navigation */}
                 <nav className="hidden md:flex items-center space-x-2">
                      {[
                         { id: VIEWS.DASHBOARD, label: 'Dashboard', IconComponent: HomeIcon },
@@ -1166,12 +1098,10 @@ export default function App() {
                     ))}
                 </nav>
 
-                {/* Right Side Controls & Profile */}
                 <div className="flex items-center gap-4">
                     
                     <ThemeSwitch />
                     
-                    {/* User Profile Button - Triggers Profile View */}
                     <div 
                         onClick={() => setCurrentView(VIEWS.PROFILE)}
                         className="flex items-center gap-3 pl-3 border-l border-slate-700/50 dark:border-gray-700 cursor-pointer hover:opacity-80 transition-opacity"
@@ -1195,7 +1125,6 @@ export default function App() {
                 </div>
             </header>
 
-            {/* Mobile Navigation Menu (Overlay) */}
             <div className={`md:hidden fixed top-20 w-full h-auto z-20 transition-all duration-300 ${isMobileMenuOpen ? 'translate-y-0 opacity-100' : '-translate-y-full opacity-0 pointer-events-none'} ${theme.navBg} shadow-xl rounded-b-2xl p-4`}>
                 <div className="space-y-2">
                     {[
@@ -1212,7 +1141,6 @@ export default function App() {
                 </div>
             </div>
 
-            {/* Main Content */}
             <main className={`flex-1 w-full max-w-7xl mx-auto px-4 lg:px-8 pt-28 pb-12 transition-all duration-300`}>
                 <div className="animate-fade-in">
                     {currentView === VIEWS.DASHBOARD && <Dashboard />}
