@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import { initializeApp, getApps, getApp } from 'firebase/app';
+import { motion, AnimatePresence } from 'framer-motion';
 import { 
     getAuth, 
     signInAnonymously, 
@@ -42,6 +43,30 @@ const firebaseConfig = {
 };
 
 // ==========================================
+// ANIMATION VARIANTS
+// ==========================================
+const pageVariants = {
+    initial: { opacity: 0, y: 20 },
+    animate: { opacity: 1, y: 0, transition: { duration: 0.3, ease: "easeOut" } },
+    exit: { opacity: 0, y: -20, transition: { duration: 0.2, ease: "easeIn" } }
+};
+
+const containerVariants = {
+    hidden: { opacity: 0 },
+    show: {
+        opacity: 1,
+        transition: {
+            staggerChildren: 0.1
+        }
+    }
+};
+
+const itemVariants = {
+    hidden: { opacity: 0, y: 20 },
+    show: { opacity: 1, y: 0 }
+};
+
+// ==========================================
 // ICONS
 // ==========================================
 const Icon = ({ children, className }) => (
@@ -50,7 +75,7 @@ const Icon = ({ children, className }) => (
 const ProgressIcon = (props) => <Icon {...props}><path d="M12 20V10"/><path d="M18 20V4"/><path d="M6 20v-4"/></Icon>;
 const ReportIcon = (props) => <Icon {...props}><path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><line x1="10" y1="9" x2="8" y2="9"/></Icon>;
 const DatabaseIcon = (props) => <Icon {...props}><ellipse cx="12" cy="5" rx="9" ry="3"/><path d="M3 5v14a9 3 0 0 0 18 0V5"/><path d="M3 12A9 9 0 0 0 21 12"/><path d="M3 19A9 9 0 0 0 21 19"/></Icon>;
-const EvaluateIcon = (props) => <Icon {...props}><path d="M12 20h.01"/><path d="M8.2 11.2a2 2 0 1 0 2.8 2.8"/><path d="M14.8 11.2a2 2 0 1 0 2.8 2.8"/><path d="M12 21a9 9 0 1 0 0-18 9 9 0 0 0 0 18z"/></Icon>;
+const EvaluateIcon = (props) => <Icon {...props}><path d="M12 20h.01"/><path d="M8.2 11.2a2 2 0 1 0 2.8 2.8"/><path d="M14.8 11.2a2 2 0 1 0 2.8 2.8"/><path d="M12 21a9 9 0 1 0 0-18 9 9 0 0 0 18z"/></Icon>;
 const PlusIcon = (props) => <Icon {...props}><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></Icon>;
 const TrashIcon = (props) => <Icon {...props}><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6"/><path d="M10 11v6"/><path d="M14 11v6"/><path d="M15 6V4a2 2 0 0 0-2-2h-2a2 2 0 0 0-2 2v2"/></Icon>;
 const CheckCircleIcon = (props) => <Icon {...props}><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></Icon>;
@@ -82,20 +107,30 @@ const MessageSquareIcon = (props) => <Icon {...props}><path d="M21 15a2 2 0 0 1-
 const BellIcon = (props) => <Icon {...props}><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9" /><path d="M13.73 21a2 2 0 0 1-3.46 0" /></Icon>;
 const DownloadIcon = (props) => <Icon {...props}><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></Icon>;
 const PieChartIcon = (props) => <Icon {...props}><path d="M21.21 15.89A10 10 0 1 1 8 2.83" /><path d="M22 12A10 10 0 0 0 12 2v10z" /></Icon>;
+const ArrowRightIcon = (props) => <Icon {...props}><line x1="5" y1="12" x2="19" y2="12" /><polyline points="12 5 19 12 12 19" /></Icon>;
+const CheckIcon = (props) => <Icon {...props}><polyline points="20 6 9 17 4 12" /></Icon>;
 
 // ==========================================
-// UI COMPONENTS (Enhanced)
+// UI COMPONENTS (Enhanced with Framer Motion)
 // ==========================================
 
-const Card = ({ children, className = "", theme }) => (
-    <div className={`${theme?.card || 'bg-cyan dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-xl'} rounded-3xl p-6 transition-all duration-300 ${className}`}>{children}</div>
+const Card = ({ children, className = "", theme, noHover }) => (
+    <motion.div 
+        whileHover={!noHover ? { y: -5, boxShadow: "0 10px 30px -10px rgba(0,0,0,0.2)" } : {}}
+        transition={{ type: "spring", stiffness: 300, damping: 20 }}
+        className={`${theme?.card || 'bg-cyan dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-xl'} rounded-3xl p-6 transition-colors duration-300 ${className}`}
+    >
+        {children}
+    </motion.div>
 );
 
 const Button = ({ children, variant = "primary", onClick, className = "", theme, disabled, isLoading, ...props }) => (
-    <button 
+    <motion.button 
+        whileTap={{ scale: 0.95 }}
+        whileHover={{ scale: 1.02 }}
         onClick={onClick} 
         disabled={disabled || isLoading}
-        className={`px-6 py-3 rounded-xl font-semibold transition-all duration-300 flex items-center justify-center space-x-2 
+        className={`px-6 py-3 rounded-xl font-semibold transition-colors duration-300 flex items-center justify-center space-x-2 
         disabled:opacity-50 disabled:cursor-not-allowed 
         ${variant === 'primary' 
             ? (theme?.accentPrimary || 'bg-indigo-600 text-white hover:bg-indigo-700') 
@@ -109,14 +144,17 @@ const Button = ({ children, variant = "primary", onClick, className = "", theme,
                 <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
             </svg>
         ) : children}
-    </button>
+    </motion.button>
 );
 
 const Input = ({ className = "", theme, ...props }) => (
-    <input {...props} className={`w-full px-4 py-3 rounded-xl transition-all outline-none border 
+    <motion.input 
+        whileFocus={{ scale: 1.01, boxShadow: "0px 0px 0px 2px rgba(99, 102, 241, 0.2)" }}
+        {...props} 
+        className={`w-full px-4 py-3 rounded-xl transition-all outline-none border 
         ${theme?.input || 'bg-cyan dark:bg-slate-800 border-slate-300 dark:border-slate-700 text-slate-900 dark:text-white'}
         placeholder-slate-400 dark:placeholder-slate-500
-        focus:border-indigo-600 focus:ring-2 focus:ring-indigo-600/20 ${className}`} 
+        focus:border-indigo-600 ${className}`} 
     />
 );
 
@@ -168,6 +206,7 @@ export default function App() {
     const [showRawData, setShowRawData] = useState(false);
     const [showNotifications, setShowNotifications] = useState(false);
     const [authLoading, setAuthLoading] = useState(false);
+    const [showWelcome, setShowWelcome] = useState(true);
 
     // -- Toast System --
     const [toasts, setToasts] = useState([]);
@@ -181,43 +220,31 @@ export default function App() {
 
     const toggleTheme = () => setDarkMode(!darkMode);
     
-    // -- Theme Config (Refined for better contrast) --
     // -- Theme Config (Refined for High Contrast & Readability) --
     const theme = {
         appBg: darkMode ? 'bg-slate-950' : 'bg-gray-50', 
         navBg: darkMode 
             ? (isUserAdmin ? 'bg-slate-900 border-b border-cyan-900/50' : 'bg-slate-900 border-b border-slate-800')
             : 'bg-cyan border-b border-slate-200 shadow-sm',
-        
-        // Text - Increased contrast for readability
         textPrimary: darkMode ? 'text-gray-100' : 'text-slate-900',
         textSecondary: darkMode ? 'text-slate-400' : 'text-slate-600',
         textHighlight: darkMode ? 'text-white' : 'text-indigo-900',
         heading: darkMode ? 'text-white tracking-tight' : 'text-slate-900 tracking-tight',
-        
-        // Cards - Better separation from background
         card: darkMode 
             ? 'bg-slate-900 border border-slate-800 shadow-xl shadow-black/20' 
             : 'bg-cyan border border-slate-200 shadow-lg shadow-slate-200/60',
-        
-        // Inputs - Distinct from cards
         input: darkMode 
             ? 'bg-slate-950 text-white border-slate-700 focus:border-indigo-500 placeholder-slate-600' 
             : 'bg-slate-50 text-slate-900 border-slate-300 focus:border-indigo-600 placeholder-slate-400',
-        
-        // Buttons & Accents
         accentPrimary: isUserAdmin 
             ? 'bg-cyan-600 hover:bg-cyan-500 text-white shadow-lg shadow-cyan-900/20 border border-transparent' 
             : 'bg-indigo-600 hover:bg-indigo-500 text-white shadow-lg shadow-indigo-900/20 border border-transparent',
-        
         accentSecondary: darkMode 
             ? 'bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700' 
             : 'bg-cyan hover:bg-slate-50 text-slate-700 border border-slate-200 shadow-sm',
-        
         navActive: isUserAdmin 
-            ? 'bg-cyan-500/10 text-cyan-400 border border-cyan-500/20' 
-            : 'bg-indigo-500/10 text-indigo-600 border border-indigo-500/20',
-        
+            ? 'text-cyan-400 border border-cyan-500/20' 
+            : 'text-indigo-600 border border-indigo-500/20',
         navItem: darkMode 
             ? 'text-slate-400 hover:text-slate-100 hover:bg-slate-800/50' 
             : 'text-slate-500 hover:text-indigo-700 hover:bg-slate-100',
@@ -268,6 +295,7 @@ export default function App() {
                 const name = user.displayName || (user.isAnonymous ? `${ANONYMOUS_NAME_PREFIX}${user.uid.slice(0,4)}` : email.split('@')[0]);
                 setUserName(name);
                 setIsUserAdmin(ADMIN_EMAILS.includes(email.toLowerCase()));
+                setShowWelcome(false); // Auto-hide welcome if logged in
 
                 const userDocRef = doc(db, 'artifacts', appId, 'users', user.uid);
                 try {
@@ -342,7 +370,12 @@ export default function App() {
             if (action === 'signup') await createUserWithEmailAndPassword(auth, ...args);
             if (action === 'google') await signInWithPopup(auth, new GoogleAuthProvider());
             if (action === 'anon') await signInAnonymously(auth);
-            if (action === 'logout') { await signOut(auth); setCurrentView(VIEWS.DASHBOARD); setAuthView(AUTH_VIEWS.INIT); }
+            if (action === 'logout') { 
+                await signOut(auth); 
+                setCurrentView(VIEWS.DASHBOARD); 
+                setAuthView(AUTH_VIEWS.INIT);
+                setShowWelcome(true); // Reset to welcome page on logout
+            }
             
             addToast('success', action === 'logout' ? 'Logged out' : 'Success!');
             if (action !== 'logout') setAuthView(AUTH_VIEWS.INIT);
@@ -460,32 +493,50 @@ export default function App() {
     }, [userTeam]);
 
     // -- Nav Item Component (Localized) --
+    // -- UPDATED: Removed layoutId to fix "strange blue color" issue --
     const NavItem = ({ view, label, IconComponent }) => (
         <button
             onClick={() => { setCurrentView(view); setIsMobileMenuOpen(false); }}
-            className={`px-4 py-2 rounded-xl text-sm font-medium transition-all duration-200 flex items-center space-x-3 ${currentView === view ? theme.navActive : theme.navItem}`}
+            className={`relative px-4 py-2 rounded-xl text-sm font-medium transition-all duration-200 flex items-center space-x-3 overflow-hidden z-10 
+            ${currentView === view ? theme.navActive : theme.navItem}`}
         >
-            <IconComponent className="w-5 h-5 flex-shrink-0" />
-            <span className="truncate">{label}</span>
+            {currentView === view && (
+                <motion.div
+                    // Removed layoutId="nav-bg" to prevent the morphing stretch effect
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 0.1 }}
+                    exit={{ opacity: 0 }}
+                    className={`absolute inset-0 z-0 ${isUserAdmin ? 'bg-cyan-500' : 'bg-indigo-500'}`}
+                    transition={{ duration: 0.2 }}
+                />
+            )}
+            <IconComponent className="w-5 h-5 flex-shrink-0 z-10 relative" />
+            <span className="truncate z-10 relative">{label}</span>
         </button>
     );
     
+    // -- Enhanced Theme Switch --
     const ThemeSwitch = () => (
-        <label htmlFor="theme-toggle" className="flex items-center cursor-pointer transition-colors duration-300">
-            <div className={`relative ${darkMode ? (isUserAdmin ? 'text-cyan-400' : 'text-fuchsia-400') : 'text-indigo-600'}`}>
-                <input 
-                    id="theme-toggle" 
-                    type="checkbox" 
-                    className="sr-only" 
-                    checked={!darkMode} 
-                    onChange={toggleTheme}
-                />
-                <div className={`block w-14 h-8 rounded-full ${darkMode ? 'bg-slate-800' : 'bg-slate-200'} shadow-inner`}></div>
-                <div className={`absolute left-1 top-1 w-6 h-6 rounded-full transition-all duration-300 flex items-center justify-center transform ${!darkMode ? 'translate-x-full bg-cyan shadow-md' : 'translate-x-0 bg-slate-600 shadow-md'}`}>
-                    {darkMode ? <MoonIcon className="w-4 h-4 text-slate-200" /> : <SunIcon className="w-4 h-4 text-yellow-500" />}
-                </div>
+        <div onClick={toggleTheme} className="flex items-center cursor-pointer">
+            <div className={`relative w-14 h-8 rounded-full transition-colors duration-300 ${darkMode ? 'bg-slate-800' : 'bg-slate-200'} shadow-inner p-1`}>
+                <motion.div
+                    className={`w-6 h-6 rounded-full shadow-md flex items-center justify-center ${darkMode ? 'bg-slate-600' : 'bg-white'}`}
+                    layout
+                    transition={{ type: "spring", stiffness: 700, damping: 30 }}
+                    animate={{ x: darkMode ? 24 : 0 }} 
+                >
+                    <motion.div
+                        key={darkMode ? "moon" : "sun"}
+                        initial={{ scale: 0.5, rotate: -90, opacity: 0 }}
+                        animate={{ scale: 1, rotate: 0, opacity: 1 }}
+                        exit={{ scale: 0.5, rotate: 90, opacity: 0 }}
+                        transition={{ duration: 0.2 }}
+                    >
+                        {darkMode ? <MoonIcon className="w-4 h-4 text-slate-200" /> : <SunIcon className="w-4 h-4 text-amber-500" />}
+                    </motion.div>
+                </motion.div>
             </div>
-        </label>
+        </div>
     );
 
     const Footer = () => (
@@ -500,7 +551,182 @@ export default function App() {
         </footer>
     );
 
-    // -- Sub-Views --
+    // --- Enhanced Welcome Page ---
+    const WelcomeLanding = ({ onGetStarted }) => {
+        const scrollToFeatures = () => {
+            const el = document.getElementById('features-section');
+            if (el) el.scrollIntoView({ behavior: 'smooth' });
+        };
+
+        return (
+            <motion.div initial={{opacity: 0}} animate={{opacity: 1}} exit={{opacity: 0}} className={`min-h-screen flex flex-col ${theme.appBg} transition-colors duration-500 overflow-x-hidden`}>
+                {/* Hero Section */}
+                <div className="relative flex flex-col items-center justify-center min-h-screen p-4 overflow-hidden">
+                    {/* Background Decor */}
+                    <div className="absolute top-0 left-0 w-full h-full overflow-hidden pointer-events-none">
+                        <motion.div animate={{ scale: [1, 1.1, 1], opacity: [0.3, 0.6, 0.3] }} transition={{ duration: 10, repeat: Infinity }} className="absolute -top-20 -left-20 w-96 h-96 bg-indigo-500/20 rounded-full blur-3xl"></motion.div>
+                        <motion.div animate={{ scale: [1, 1.2, 1], opacity: [0.2, 0.5, 0.2] }} transition={{ duration: 12, repeat: Infinity, delay: 2 }} className="absolute top-1/2 -right-20 w-72 h-72 bg-fuchsia-500/20 rounded-full blur-3xl"></motion.div>
+                        <div className="absolute bottom-0 left-1/3 w-80 h-80 bg-cyan-500/10 rounded-full blur-3xl"></div>
+                    </div>
+
+                    <div className="max-w-6xl mx-auto w-full grid grid-cols-1 lg:grid-cols-2 gap-12 items-center relative z-10 pt-10">
+                        <motion.div 
+                            variants={containerVariants}
+                            initial="hidden"
+                            animate="show"
+                            className="space-y-8"
+                        >
+                            <motion.div variants={itemVariants}>
+                                <motion.div whileHover={{ rotate: 10 }} className="w-20 h-20 flex items-center justify-center mb-6 bg-gradient-to-br from-indigo-500 to-fuchsia-600 rounded-2xl shadow-lg text-white">
+                                    <img src="/logo.png" alt="Acadex" className="h-12 w-auto object-contain brightness-0 invert" />
+                                </motion.div>
+                                <h1 className={`text-5xl md:text-7xl font-black leading-tight ${theme.heading}`}>
+                                    Elevate Your <br/>
+                                    <span className="text-transparent bg-clip-text bg-gradient-to-r from-indigo-500 to-fuchsia-500">Academic Journey</span>
+                                </h1>
+                                <p className={`text-lg md:text-xl ${theme.textSecondary} max-w-lg mt-6 leading-relaxed`}>
+                                    The all-in-one platform for students and faculty to manage projects, track real-time progress, and streamline the grading process with ease.
+                                </p>
+                            </motion.div>
+
+                            <motion.div variants={itemVariants} className="flex flex-col sm:flex-row gap-4">
+                                <Button theme={theme} onClick={onGetStarted} className="px-8 py-4 text-lg shadow-lg shadow-indigo-500/30">
+                                    Get Started <ArrowRightIcon className="w-5 h-5 ml-2" />
+                                </Button>
+                                <motion.button whileTap={{scale: 0.95}} onClick={scrollToFeatures} className={`px-8 py-4 rounded-xl font-semibold flex items-center justify-center border ${darkMode ? 'border-slate-700 text-slate-300 hover:bg-slate-800' : 'border-slate-200 text-slate-600 hover:bg-slate-100'}`}>
+                                    Learn More
+                                </motion.button>
+                            </motion.div>
+
+                            <motion.div variants={itemVariants} className="pt-8 border-t border-slate-200 dark:border-slate-800 grid grid-cols-3 gap-6">
+                                {[
+                                    { label: 'Active Projects', val: '8' },
+                                    { label: 'Users', val: '19' },
+                                    { label: 'Satisfaction', val: '99%' }
+                                ].map((stat, i) => (
+                                    <div key={i}>
+                                        <div className={`text-2xl font-bold ${theme.textPrimary}`}>{stat.val}</div>
+                                        <div className={`text-xs uppercase tracking-wider ${theme.textSecondary}`}>{stat.label}</div>
+                                    </div>
+                                ))}
+                            </motion.div>
+                        </motion.div>
+
+                        <motion.div 
+                            initial={{ opacity: 0, x: 50 }}
+                            animate={{ opacity: 1, x: 0 }}
+                            transition={{ duration: 0.8, delay: 0.2 }}
+                            className="hidden lg:grid grid-cols-2 gap-4"
+                        >
+                            <Card theme={theme} className="col-span-2 !p-8 bg-gradient-to-br from-slate-800 to-slate-900 border-none shadow-2xl relative overflow-hidden group">
+                                <div className="absolute top-0 right-0 p-10 opacity-10 group-hover:opacity-20 transition-opacity transform group-hover:scale-110 duration-500">
+                                    <LayoutIcon width="120" height="120" />
+                                </div>
+                                <div className="flex justify-between items-start mb-4 relative z-10">
+                                    <div className="p-3 bg-indigo-500/20 rounded-xl text-indigo-400"><LayoutIcon className="w-8 h-8"/></div>
+                                    <div className="px-3 py-1 rounded-full bg-emerald-500/20 text-emerald-400 text-xs font-bold animate-pulse">Live Demo</div>
+                                </div>
+                                <h3 className="text-white text-xl font-bold mb-2 relative z-10">Centralized Dashboard</h3>
+                                <p className="text-slate-400 text-sm relative z-10">Track deadlines, manage tasks, and visualize progress in one intuitive interface.</p>
+                            </Card>
+                            <Card theme={theme} className="bg-slate-100 dark:bg-slate-800 border-none">
+                                <div className="p-2 bg-fuchsia-100 dark:bg-fuchsia-900/30 w-fit rounded-lg text-fuchsia-600 mb-3"><EvaluateIcon className="w-6 h-6"/></div>
+                                <h4 className={`font-bold ${theme.heading}`}>Smart Grading</h4>
+                                <p className={`text-xs ${theme.textSecondary} mt-1`}>Automated rubrics & instant feedback.</p>
+                            </Card>
+                            <Card theme={theme} className="bg-slate-100 dark:bg-slate-800 border-none">
+                                <div className="p-2 bg-cyan-100 dark:bg-cyan-900/30 w-fit rounded-lg text-cyan-600 mb-3"><UsersIcon className="w-6 h-6"/></div>
+                                <h4 className={`font-bold ${theme.heading}`}>Team Sync</h4>
+                                <p className={`text-xs ${theme.textSecondary} mt-1`}>Seamless collaboration for groups.</p>
+                            </Card>
+                        </motion.div>
+                    </div>
+                    
+                    {/* Scroll Down Indicator */}
+                    <motion.div 
+                        animate={{ y: [0, 10, 0] }}
+                        transition={{ repeat: Infinity, duration: 1.5 }}
+                        className="absolute bottom-10 left-1/2 transform -translate-x-1/2 cursor-pointer opacity-50 hover:opacity-100" 
+                        onClick={scrollToFeatures}
+                    >
+                         <Icon className="w-8 h-8 text-slate-500"><path d="M7 13l5 5 5-5M7 6l5 5 5-5"/></Icon>
+                    </motion.div>
+                </div>
+
+                {/* Features Section */}
+                <div id="features-section" className={`py-20 px-4 ${darkMode ? 'bg-slate-900/50' : 'bg-slate-100'}`}>
+                    <div className="max-w-6xl mx-auto">
+                        <div className="text-center mb-16">
+                            <span className="text-indigo-500 font-bold tracking-wider uppercase text-sm">Features</span>
+                            <h2 className={`text-4xl font-bold mt-2 ${theme.heading}`}>Everything you need to succeed</h2>
+                            <p className={`mt-4 max-w-2xl mx-auto ${theme.textSecondary}`}>AcadEx streamlines the chaotic process of project management into a simple, coherent workflow.</p>
+                        </div>
+
+                        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+                             {[
+                                { title: "Kanban Tracking", desc: "Drag and drop tasks to manage workflow status efficiently.", icon: LayoutIcon, color: "text-blue-500", bg: "bg-blue-500/10" },
+                                { title: "Real-time Collaboration", desc: "Comment on tasks and sync updates instantly with your team.", icon: UsersIcon, color: "text-emerald-500", bg: "bg-emerald-500/10" },
+                                { title: "Secure Submissions", desc: "Submit reports and link external resources in a locked-down environment.", icon: FileIcon, color: "text-fuchsia-500", bg: "bg-fuchsia-500/10" },
+                                { title: "Analytics Dashboard", desc: "Admin insights into project completion rates and performance metrics.", icon: PieChartIcon, color: "text-orange-500", bg: "bg-orange-500/10" },
+                                { title: "Automated Grading", desc: "Rubric-based evaluation system for standardized scoring.", icon: EvaluateIcon, color: "text-violet-500", bg: "bg-violet-500/10" },
+                                { title: "Role Management", desc: "Distinct portals for Students, Team Leads, and Administrators.", icon: ShieldIcon, color: "text-cyan-500", bg: "bg-cyan-500/10" }
+                             ].map((f, i) => (
+                                 <Card key={i} theme={theme} className="border border-slate-200 dark:border-slate-800">
+                                     <div className={`w-12 h-12 rounded-xl flex items-center justify-center mb-4 ${f.bg} ${f.color}`}>
+                                         <f.icon className="w-6 h-6" />
+                                     </div>
+                                     <h3 className={`text-xl font-bold mb-2 ${theme.heading}`}>{f.title}</h3>
+                                     <p className={`text-sm leading-relaxed ${theme.textSecondary}`}>{f.desc}</p>
+                                 </Card>
+                             ))}
+                        </div>
+                    </div>
+                </div>
+
+                {/* How It Works Section */}
+                <div className="py-20 px-4">
+                    <div className="max-w-5xl mx-auto">
+                        <h2 className={`text-3xl font-bold mb-12 text-center ${theme.heading}`}>How It Works</h2>
+                        <div className="relative">
+                            {/* Connector Line */}
+                            <div className="hidden md:block absolute top-1/2 left-0 w-full h-1 bg-slate-200 dark:bg-slate-800 -translate-y-1/2 z-0"></div>
+                            
+                            <div className="grid grid-cols-1 md:grid-cols-4 gap-8 relative z-10">
+                                {[
+                                    { step: "01", title: "Sign Up", desc: "Create your student or admin profile." },
+                                    { step: "02", title: "Form Team", desc: "Invite members and register a project." },
+                                    { step: "03", title: "Track", desc: "Manage tasks and submit updates." },
+                                    { step: "04", title: "Evaluate", desc: "Get graded and receive feedback." }
+                                ].map((s, i) => (
+                                    <div key={i} className={`p-6 rounded-2xl text-center ${theme.card} border border-slate-200 dark:border-slate-700`}>
+                                        <div className="w-10 h-10 rounded-full bg-indigo-600 text-white font-bold flex items-center justify-center mx-auto mb-4 text-lg shadow-lg shadow-indigo-500/30">{s.step}</div>
+                                        <h3 className={`text-lg font-bold mb-2 ${theme.heading}`}>{s.title}</h3>
+                                        <p className={`text-sm ${theme.textSecondary}`}>{s.desc}</p>
+                                    </div>
+                                ))}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                {/* CTA Section */}
+                <div className="py-20 px-4">
+                     <div className={`max-w-4xl mx-auto rounded-3xl p-12 text-center relative overflow-hidden ${isUserAdmin ? 'bg-gradient-to-r from-cyan-900 to-slate-900' : 'bg-gradient-to-r from-indigo-900 to-slate-900'} shadow-2xl`}>
+                        <div className="absolute top-0 right-0 p-4 opacity-10"><DatabaseIcon width="300" height="300" className="text-white"/></div>
+                        <h2 className="text-3xl md:text-4xl font-bold text-white mb-6 relative z-10">Ready to streamline your projects?</h2>
+                        <p className="text-indigo-100 mb-8 max-w-2xl mx-auto relative z-10">Join thousands of students and faculty members who are already using AcadEx to achieve academic excellence.</p>
+                        <Button theme={theme} onClick={onGetStarted} className="px-10 py-4 text-lg bg-cyan text-indigo-900 hover:bg-indigo-50 border-none shadow-xl mx-auto relative z-10">
+                            Get Started Now
+                        </Button>
+                     </div>
+                </div>
+
+                <Footer />
+            </motion.div>
+        );
+    };
+
+    // --- Sub-Views ---
     
     const ProfileView = () => {
         const [formData, setFormData] = useState({
@@ -567,7 +793,7 @@ export default function App() {
         return (
             <div className="max-w-4xl mx-auto">
                 <h1 className={`text-3xl font-bold mb-8 ${theme.heading}`}>User Profile Settings</h1>
-                <Card theme={theme} className="overflow-hidden !p-0">
+                <Card theme={theme} className="overflow-hidden !p-0" noHover>
                     <div className={`relative h-40 rounded-t-3xl mb-16 shadow-inner ${isUserAdmin ? 'bg-gradient-to-tr from-cyan-700 to-teal-800' : 'bg-gradient-to-tr from-violet-700 to-fuchsia-800'}`}>
                         <div className="absolute -bottom-12 left-8">
                             <div className="relative group">
@@ -634,18 +860,36 @@ export default function App() {
 
         return (
             <div className={`min-h-screen flex items-center justify-center p-4 ${theme.appBg} transition-colors duration-500`}>
-                <div className="w-full max-w-md">
+                <motion.div 
+                    initial={{ scale: 0.9, opacity: 0 }} 
+                    animate={{ scale: 1, opacity: 1 }} 
+                    className="w-full max-w-md relative"
+                >
+                    {/* Back to Home Button */}
+                    <button 
+                        onClick={() => setShowWelcome(true)}
+                        className={`absolute -top-12 left-0 flex items-center text-sm font-medium ${theme.textSecondary} hover:text-indigo-500 transition-colors`}
+                    >
+                        <span className="mr-1">←</span> Back to Home
+                    </button>
+
                     <div className="text-center mb-8">
-                        <div className="w-20 h-20 mx-auto flex items-center justify-center mb-4 bg-cyan rounded-2xl shadow-lg">
+                        <motion.div 
+                            initial={{ y: -20, opacity: 0 }}
+                            animate={{ y: 0, opacity: 1 }}
+                            transition={{ delay: 0.2 }}
+                            className="w-20 h-20 mx-auto flex items-center justify-center mb-4 bg-cyan rounded-2xl shadow-lg"
+                        >
                             <img src="/logo.png" alt="Acadex" className="h-12 w-auto object-contain" />
-                        </div>
+                        </motion.div>
                         <h1 className={`text-3xl font-extrabold ${theme.heading}`}>Acadex</h1>
                         <p className={`mt-2 ${theme.textSecondary}`}>Academic Project Management Suite</p>
                     </div>
 
-                    <Card theme={theme} className="!p-8 space-y-6 backdrop-blur-xl border-opacity-50">
+                    <Card theme={theme} className="!p-8 space-y-6 backdrop-blur-xl border-opacity-50" noHover>
+                        <AnimatePresence mode="wait">
                         {authView === AUTH_VIEWS.INIT ? (
-                            <div className="space-y-4">
+                            <motion.div key="init" initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: 20 }} className="space-y-4">
                                 <h2 className={`text-xl font-bold text-center ${theme.heading}`}>Welcome Back</h2>
                                 <Button theme={theme} onClick={() => setAuthView(AUTH_VIEWS.LOGIN)} className="w-full h-12 text-lg shadow-lg shadow-fuchsia-500/20">
                                     Sign In with Email
@@ -659,19 +903,20 @@ export default function App() {
                                     <div className="relative flex justify-center text-xs uppercase"><span className={`bg-cyan dark:bg-slate-900 px-2 ${theme.textSecondary}`}>Or continue with</span></div>
                                 </div>
 
-                                <button 
+                                <motion.button 
+                                    whileTap={{ scale: 0.95 }}
                                     onClick={() => handleAction('google')} 
                                     disabled={authLoading}
                                     className="w-full h-12 flex items-center justify-center bg-cyan text-gray-700 border border-gray-300 rounded-xl hover:bg-gray-50 transition-colors font-medium shadow-sm"
                                 >
                                     <GoogleIcon className="w-5 h-5 mr-3" />
                                     {authLoading ? 'Connecting...' : 'Continue with Google'}
-                                </button>
+                                </motion.button>
                                 
                                 <p className="text-center text-xs text-gray-400 mt-4 cursor-pointer hover:underline" onClick={() => handleAction('anon')}>Skip and continue as guest</p>
-                            </div>
+                            </motion.div>
                         ) : (
-                            <form onSubmit={(e) => { e.preventDefault(); handleAction(authView === AUTH_VIEWS.LOGIN ? 'login' : 'signup', creds.email, creds.pass); }} className="space-y-5">
+                            <motion.form key="form" initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }} onSubmit={(e) => { e.preventDefault(); handleAction(authView === AUTH_VIEWS.LOGIN ? 'login' : 'signup', creds.email, creds.pass); }} className="space-y-5">
                                 <div className="flex items-center justify-between">
                                     <h2 className={`text-xl font-bold ${theme.heading}`}>{authView === AUTH_VIEWS.LOGIN ? 'Login' : 'Create Account'}</h2>
                                     <button type="button" onClick={() => setAuthView(AUTH_VIEWS.INIT)} className={`text-sm ${theme.textSecondary} hover:text-fuchsia-500`}>Back</button>
@@ -702,10 +947,11 @@ export default function App() {
                                         {authView === AUTH_VIEWS.LOGIN ? "Don't have an account? Sign up" : "Already have an account? Log in"}
                                     </button>
                                 </div>
-                            </form>
+                            </motion.form>
                         )}
+                        </AnimatePresence>
                     </Card>
-                </div>
+                </motion.div>
             </div>
         );
     };
@@ -731,7 +977,7 @@ export default function App() {
 
         return (
             <div className="max-w-2xl mx-auto">
-                <Card theme={theme}>
+                <Card theme={theme} noHover>
                     <h2 className={`text-3xl font-bold ${theme.heading} mb-6`}>Start a New Project</h2>
                     <p className={`mb-8 ${theme.textSecondary}`}>Define your team and project scope to begin tracking progress.</p>
                     <div className="space-y-6">
@@ -747,8 +993,15 @@ export default function App() {
                         <div>
                             <label className={`block text-sm font-medium mb-2 ${theme.textSecondary}`}>Invite Members (Emails)</label>
                             <div className="space-y-3">
+                                <AnimatePresence>
                                 {memberEmails.map((email, index) => (
-                                    <div key={index} className="flex gap-2 items-center">
+                                    <motion.div 
+                                        key={index}
+                                        initial={{ opacity: 0, height: 0 }}
+                                        animate={{ opacity: 1, height: 'auto' }}
+                                        exit={{ opacity: 0, height: 0 }}
+                                        className="flex gap-2 items-center"
+                                    >
                                         <Input theme={theme}
                                             type="email"
                                             value={email} 
@@ -760,8 +1013,9 @@ export default function App() {
                                                 <TrashIcon className="w-5 h-5" />
                                             </button>
                                         )}
-                                    </div>
+                                    </motion.div>
                                 ))}
+                                </AnimatePresence>
                             </div>
                             <Button theme={theme} variant="secondary" onClick={addEmailField} className={`mt-4 text-sm font-medium flex items-center gap-1`}>
                                 <PlusIcon className="w-4 h-4" /> Add another member
@@ -857,7 +1111,7 @@ export default function App() {
 
                 {/* Add Task Form (Only visible to Lead or in List/Board view) */}
                 {isLead && (
-                    <Card theme={theme} className="mb-6">
+                    <Card theme={theme} className="mb-6" noHover>
                         <div className="flex flex-col md:flex-row gap-4">
                             <Input theme={theme} placeholder="New Task Title" value={newTask.title} onChange={e => setNewTask({...newTask, title: e.target.value})} />
                             <select className={`px-4 py-3 rounded-xl outline-none border ${theme.input}`} value={newTask.assigneeId} onChange={e => setNewTask({...newTask, assigneeId: e.target.value})}>
@@ -873,10 +1127,18 @@ export default function App() {
 
                 {/* LIST VIEW */}
                 {viewMode === 'list' && (
-                    <div className="space-y-3">
+                    <motion.div layout className="space-y-3">
+                        <AnimatePresence>
                         {userTeam.tasks?.length === 0 && <div className="text-center py-10 opacity-50">No tasks yet. Add one above!</div>}
                         {userTeam.tasks?.map(t => (
-                            <div key={t.id} className={`flex items-center justify-between p-4 rounded-xl border ${darkMode ? 'bg-slate-900/50 border-slate-800' : 'bg-cyan border-slate-100 shadow-sm'}`}>
+                            <motion.div 
+                                layout
+                                initial={{ opacity: 0, x: -20 }}
+                                animate={{ opacity: 1, x: 0 }}
+                                exit={{ opacity: 0, x: 20 }}
+                                key={t.id} 
+                                className={`flex items-center justify-between p-4 rounded-xl border ${darkMode ? 'bg-slate-900/50 border-slate-800' : 'bg-cyan border-slate-100 shadow-sm'}`}
+                            >
                                 <div className="flex items-center gap-4">
                                     <button onClick={() => moveTask(t, 1)} className={`w-6 h-6 rounded-full border-2 flex items-center justify-center ${t.completed ? 'bg-emerald-500 border-emerald-500 text-white' : 'border-slate-400'}`}>
                                         {t.completed && <CheckCircleIcon className="w-4 h-4" />}
@@ -892,9 +1154,10 @@ export default function App() {
                                         {t.comments?.length > 0 && <span className="absolute top-0 right-0 w-2 h-2 bg-red-500 rounded-full"></span>}
                                     </button>
                                 </div>
-                            </div>
+                            </motion.div>
                         ))}
-                    </div>
+                        </AnimatePresence>
+                    </motion.div>
                 )}
 
                 {/* KANBAN BOARD VIEW */}
@@ -905,9 +1168,17 @@ export default function App() {
                                 <h3 className={`font-bold mb-4 ${theme.heading} flex justify-between`}>
                                     {status} <span className="bg-slate-200 dark:bg-slate-700 px-2 rounded text-xs py-1">{userTeam.tasks?.filter(t => (t.status || (t.completed ? 'Done' : 'To Do')) === status).length}</span>
                                 </h3>
-                                <div className="space-y-3">
+                                <motion.div layout className="space-y-3 min-h-[100px]">
+                                    <AnimatePresence>
                                     {userTeam.tasks?.filter(t => (t.status || (t.completed ? 'Done' : 'To Do')) === status).map(t => (
-                                        <div key={t.id} className={`p-3 rounded-xl border ${darkMode ? 'bg-slate-800 border-slate-700' : 'bg-cyan border-slate-200 shadow-sm'}`}>
+                                        <motion.div 
+                                            layoutId={t.id}
+                                            initial={{ opacity: 0 }}
+                                            animate={{ opacity: 1 }}
+                                            exit={{ opacity: 0 }}
+                                            key={t.id} 
+                                            className={`p-3 rounded-xl border cursor-grab active:cursor-grabbing ${darkMode ? 'bg-slate-800 border-slate-700' : 'bg-cyan border-slate-200 shadow-sm'}`}
+                                        >
                                             <p className={`text-sm font-medium mb-2 ${theme.textPrimary}`}>{t.title}</p>
                                             <div className="flex justify-between items-center">
                                                 <span className="text-[10px] uppercase tracking-wider text-slate-500">{t.assigneeName}</span>
@@ -916,9 +1187,10 @@ export default function App() {
                                                     {status !== 'Done' && <button onClick={() => moveTask(t, 1)} className="text-xs px-2 py-1 bg-fuchsia-100 text-fuchsia-600 dark:bg-fuchsia-900/30 rounded hover:opacity-80">→</button>}
                                                 </div>
                                             </div>
-                                        </div>
+                                        </motion.div>
                                     ))}
-                                </div>
+                                    </AnimatePresence>
+                                </motion.div>
                             </div>
                         ))}
                     </div>
@@ -937,12 +1209,12 @@ export default function App() {
                                 <h3 className={`text-sm font-bold uppercase tracking-widest mb-3 ${theme.textSecondary}`}>{date === 'No Date' ? 'Unscheduled' : new Date(date).toDateString()}</h3>
                                 <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
                                     {tasks.map(t => (
-                                        <div key={t.id} className={`p-4 rounded-xl border border-l-4 ${t.completed ? 'border-l-emerald-500 opacity-60' : 'border-l-fuchsia-500'} ${theme.card}`}>
+                                        <Card theme={theme} key={t.id} className={`p-4 border-l-4 ${t.completed ? 'border-l-emerald-500 opacity-60' : 'border-l-fuchsia-500'}`} noHover>
                                             <div className="flex justify-between">
                                                 <span className={`font-medium ${theme.textPrimary}`}>{t.title}</span>
                                                 <span className={`text-xs px-2 py-1 rounded ${t.status === 'Done' ? 'bg-emerald-100 text-emerald-700' : 'bg-amber-100 text-amber-700'}`}>{t.status || 'To Do'}</span>
                                             </div>
-                                        </div>
+                                        </Card>
                                     ))}
                                 </div>
                             </div>
@@ -951,27 +1223,36 @@ export default function App() {
                 )}
 
                 {/* COMMENT MODAL */}
+                <AnimatePresence>
                 {commentTask && (
-                    <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 p-4">
-                        <Card theme={theme} className="w-full max-w-md">
-                            <h3 className={`font-bold mb-4 ${theme.heading}`}>Comments: {commentTask.title}</h3>
-                            <div className="h-48 overflow-y-auto space-y-3 mb-4 p-2 bg-slate-50 dark:bg-slate-900/50 rounded-xl">
-                                {commentTask.comments?.length === 0 && <p className="text-center text-slate-400 text-sm mt-10">No comments yet.</p>}
-                                {commentTask.comments?.map(c => (
-                                    <div key={c.id} className="bg-cyan dark:bg-slate-800 p-2 rounded-lg shadow-sm text-sm">
-                                        <p className="font-bold text-xs text-fuchsia-500">{c.author}</p>
-                                        <p className={theme.textPrimary}>{c.text}</p>
-                                    </div>
-                                ))}
-                            </div>
-                            <div className="flex gap-2">
-                                <Input theme={theme} value={newComment} onChange={e => setNewComment(e.target.value)} placeholder="Type a comment..." />
-                                <Button theme={theme} onClick={addComment}>Post</Button>
-                            </div>
-                            <button onClick={() => setCommentTask(null)} className="w-full mt-2 text-xs text-slate-500 hover:underline">Close</button>
-                        </Card>
-                    </div>
+                    <motion.div 
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        exit={{ opacity: 0 }}
+                        className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 p-4"
+                    >
+                        <motion.div initial={{ scale: 0.9, y: 20 }} animate={{ scale: 1, y: 0 }} exit={{ scale: 0.9, y: 20 }} className="w-full max-w-md">
+                            <Card theme={theme} className="w-full" noHover>
+                                <h3 className={`font-bold mb-4 ${theme.heading}`}>Comments: {commentTask.title}</h3>
+                                <div className="h-48 overflow-y-auto space-y-3 mb-4 p-2 bg-slate-50 dark:bg-slate-900/50 rounded-xl">
+                                    {commentTask.comments?.length === 0 && <p className="text-center text-slate-400 text-sm mt-10">No comments yet.</p>}
+                                    {commentTask.comments?.map(c => (
+                                        <div key={c.id} className="bg-cyan dark:bg-slate-800 p-2 rounded-lg shadow-sm text-sm">
+                                            <p className="font-bold text-xs text-fuchsia-500">{c.author}</p>
+                                            <p className={theme.textPrimary}>{c.text}</p>
+                                        </div>
+                                    ))}
+                                </div>
+                                <div className="flex gap-2">
+                                    <Input theme={theme} value={newComment} onChange={e => setNewComment(e.target.value)} placeholder="Type a comment..." />
+                                    <Button theme={theme} onClick={addComment}>Post</Button>
+                                </div>
+                                <button onClick={() => setCommentTask(null)} className="w-full mt-2 text-xs text-slate-500 hover:underline">Close</button>
+                            </Card>
+                        </motion.div>
+                    </motion.div>
                 )}
+                </AnimatePresence>
             </div>
         );
     };
@@ -1022,7 +1303,7 @@ export default function App() {
                 </div>
 
                 <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-                    <Card theme={theme} className="lg:col-span-2 space-y-4">
+                    <Card theme={theme} className="lg:col-span-2 space-y-4" noHover>
                         <h3 className={`text-xl font-bold ${theme.heading}`}>Executive Summary / Abstract</h3>
                         <textarea 
                             value={content} 
@@ -1034,7 +1315,7 @@ export default function App() {
                         />
                     </Card>
                     <div className="space-y-6">
-                        <Card theme={theme}>
+                        <Card theme={theme} noHover>
                             <h3 className={`text-lg font-bold ${theme.heading} mb-4 flex items-center`}><FileIcon className="w-5 h-5 mr-2 text-fuchsia-500"/> Supporting Files</h3>
                             <p className={`text-xs ${theme.textSecondary} mb-4`}>Submit Google Drive or MediaFire links for your project files.</p>
                             {!isSubmitted && (
@@ -1056,8 +1337,10 @@ export default function App() {
                                     </Button>
                                 </div>
                             )}
-                            <ul className="space-y-3 max-h-60 overflow-y-auto pr-2">{files.map((f, i) => (
-                                <li key={i} className={`flex items-center justify-between p-3 rounded-lg group ${darkMode ? 'bg-slate-800 hover:bg-slate-700' : 'bg-slate-50 border border-slate-100 hover:bg-slate-100'} transition-colors`}>
+                            <ul className="space-y-3 max-h-60 overflow-y-auto pr-2">
+                                <AnimatePresence>
+                                {files.map((f, i) => (
+                                <motion.li initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: 20 }} key={i} className={`flex items-center justify-between p-3 rounded-lg group ${darkMode ? 'bg-slate-800 hover:bg-slate-700' : 'bg-slate-50 border border-slate-100 hover:bg-slate-100'} transition-colors`}>
                                     <div className="overflow-hidden flex-1">
                                         <div className="flex items-center">
                                             <p className={`text-sm font-medium ${theme.textPrimary} truncate flex-1`}>{f.name}</p>
@@ -1072,13 +1355,15 @@ export default function App() {
                                         setFiles(newFiles);
                                         updateReport(content, [], newFiles, 'Draft');
                                     }} className="text-slate-400 hover:text-rose-500 ml-2"><TrashIcon className="w-4 h-4"/></button>}
-                                </li>
-                            ))}</ul>
+                                </motion.li>
+                            ))}
+                                </AnimatePresence>
+                            </ul>
                         </Card>
                     </div>
                 </div>
                 {!isSubmitted && (
-                    <div className={`sticky bottom-0 p-5 mt-8 ${theme.card} border-t backdrop-blur-lg rounded-2xl flex justify-between items-center z-20`}>
+                    <motion.div initial={{ y: 50, opacity: 0 }} animate={{ y: 0, opacity: 1 }} className={`sticky bottom-0 p-5 mt-8 ${theme.card} border-t backdrop-blur-lg rounded-2xl flex justify-between items-center z-20`}>
                         <p className={`text-sm ${theme.textSecondary}`}>Last saved: {new Date().toLocaleTimeString()}</p>
                         <div className="flex space-x-4">
                             <Button theme={theme} variant="secondary" onClick={() => updateReport(content, [], files, 'Draft')}>
@@ -1088,7 +1373,7 @@ export default function App() {
                                 <SendIcon className="w-5 h-5 mr-2" /> Submit Final
                             </Button>
                         </div>
-                    </div>
+                    </motion.div>
                 )}
             </div>
         );
@@ -1125,14 +1410,14 @@ export default function App() {
         };
         
         return (
-            <div className="max-w-6xl mx-auto space-y-8">
+            <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="max-w-6xl mx-auto space-y-8">
                 <div className="flex items-center justify-between mb-4">
                      <button onClick={onBack} className={`text-base font-medium ${theme.textSecondary} hover:text-cyan-500 transition-colors flex items-center`}><span className="mr-2">←</span> Back to Projects</button>
                      <h2 className={`text-3xl font-bold ${theme.heading}`}>Reviewing: <span className="text-cyan-500">{project.name}</span></h2>
                 </div>
                 
                 <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
-                    <Card theme={theme} className="lg:col-span-1 space-y-6 h-fit sticky top-24">
+                    <Card theme={theme} className="lg:col-span-1 space-y-6 h-fit sticky top-24" noHover>
                         <h3 className={`text-xl font-bold ${theme.heading} border-b pb-3 ${darkMode ? 'border-slate-700' : 'border-slate-200'}`}>Grade Project</h3>
                         <div className="space-y-4">
                              <div className="space-y-2">
@@ -1179,7 +1464,7 @@ export default function App() {
                     </Card>
 
                     <div className="lg:col-span-3 space-y-8">
-                        <Card theme={theme} className="space-y-4">
+                        <Card theme={theme} className="space-y-4" noHover>
                             <h3 className={`text-2xl font-bold ${theme.heading} border-b pb-3 ${darkMode ? 'border-slate-700' : 'border-slate-200'}`}>Executive Summary</h3>
                             <div className={`w-full p-5 rounded-xl min-h-[300px] font-mono text-sm leading-relaxed whitespace-pre-wrap ${theme.input} border`}>
                                 {project.report || "No report content submitted."}
@@ -1187,7 +1472,7 @@ export default function App() {
                         </Card>
                         
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                            <Card theme={theme}>
+                            <Card theme={theme} noHover>
                                 <h3 className={`text-lg font-bold ${theme.heading} mb-4 flex items-center`}><FileIcon className="w-5 h-5 mr-2 text-cyan-500"/> Submitted Files</h3>
                                 <ul className="space-y-3">
                                     {(project.files || []).map((f, i) => (
@@ -1209,7 +1494,7 @@ export default function App() {
                         </div>
                     </div>
                 </div>
-            </div>
+            </motion.div>
         );
     };
 
@@ -1263,7 +1548,7 @@ export default function App() {
                     </Card>
                 </div>
 
-                <Card theme={theme}>
+                <Card theme={theme} noHover>
                     <div className="flex justify-between items-center mb-6">
                         <h1 className={`text-4xl font-bold ${theme.heading} flex items-center`}><ShieldIcon className="w-8 h-8 mr-3 text-cyan-500"/> Admin Console</h1>
                         <div className="flex items-center gap-2">
@@ -1279,7 +1564,7 @@ export default function App() {
                     </div>
 
                     {tab === 'analytics' && (
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 py-8">
+                        <motion.div initial={{opacity:0}} animate={{opacity:1}} className="grid grid-cols-1 md:grid-cols-2 gap-8 py-8">
                             <div className="text-center">
                                 <h3 className={`text-lg font-bold mb-4 ${theme.heading}`}>Project Status</h3>
                                 {/* Simple CSS/SVG Pie Chart */}
@@ -1289,7 +1574,11 @@ export default function App() {
                                         <span className="text-xs text-slate-500">Completion Rate</span>
                                     </div>
                                     <svg className="absolute top-0 left-0 w-full h-full -rotate-90" viewBox="0 0 100 100">
-                                        <circle cx="50" cy="50" r="40" fill="none" stroke="#06b6d4" strokeWidth="8" strokeDasharray={`${(projects.filter(p => p.reportStatus === 'Submitted').length / (projects.length || 1)) * 251} 251`} strokeLinecap="round" />
+                                        <motion.circle 
+                                            initial={{ pathLength: 0 }} 
+                                            animate={{ pathLength: (projects.filter(p => p.reportStatus === 'Submitted').length / (projects.length || 1)) }} 
+                                            cx="50" cy="50" r="40" fill="none" stroke="#06b6d4" strokeWidth="8" strokeLinecap="round" 
+                                        />
                                     </svg>
                                 </div>
                             </div>
@@ -1307,7 +1596,7 @@ export default function App() {
                                     ))}
                                 </div>
                             </div>
-                        </div>
+                        </motion.div>
                     )}
 
                     {tab === 'projects' && (
@@ -1395,9 +1684,11 @@ export default function App() {
                     )}
                 </Card>
                 
+                <AnimatePresence>
                 {editProject && (
-                    <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 p-4">
-                        <Card theme={theme} className="w-full max-w-md space-y-4">
+                    <motion.div initial={{opacity:0}} animate={{opacity:1}} exit={{opacity:0}} className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 p-4">
+                        <motion.div initial={{scale:0.9}} animate={{scale:1}} exit={{scale:0.9}} className="w-full max-w-md">
+                        <Card theme={theme} className="w-full space-y-4" noHover>
                             <h3 className={`text-xl font-bold ${theme.heading}`}>Edit Project</h3>
                             <div>
                                 <label className="text-xs font-medium mb-1 block">Project Name</label>
@@ -1412,8 +1703,10 @@ export default function App() {
                                 <Button theme={theme} onClick={() => { updateProjectName(editProject.id, editProject.name, editProject.teamName); setEditProject(null); }}>Save</Button>
                             </div>
                         </Card>
-                    </div>
+                        </motion.div>
+                    </motion.div>
                 )}
+                </AnimatePresence>
             </div>
         );
     };
@@ -1428,7 +1721,7 @@ export default function App() {
             if (myStatus === 'pending') {
                 return (
                     <div className="max-w-2xl mx-auto mt-10 animate-fade-in">
-                        <Card theme={theme} className="text-center p-10 border-t-4 border-indigo-500">
+                        <Card theme={theme} className="text-center p-10 border-t-4 border-indigo-500" noHover>
                             <div className="w-20 h-20 bg-indigo-50 dark:bg-indigo-900/20 rounded-full flex items-center justify-center mx-auto mb-6 text-indigo-600 dark:text-indigo-400">
                                 <MailIcon className="w-10 h-10" />
                             </div>
@@ -1450,7 +1743,7 @@ export default function App() {
         if (!userTeam) {
              return (
                 <div className="space-y-8 animate-fade-in">
-                    <Card theme={theme} className={`flex flex-col md:flex-row gap-8 p-10 ${isUserAdmin ? 'bg-gradient-to-br from-cyan-800 to-slate-900' : 'bg-gradient-to-br from-indigo-800 to-slate-900'} !border-none text-white relative overflow-hidden min-h-[300px] items-center`}>
+                    <Card theme={theme} className={`flex flex-col md:flex-row gap-8 p-10 ${isUserAdmin ? 'bg-gradient-to-br from-cyan-800 to-slate-900' : 'bg-gradient-to-br from-indigo-800 to-slate-900'} !border-none text-white relative overflow-hidden min-h-[300px] items-center`} noHover>
                         <div className="absolute right-0 bottom-0 opacity-10 transform translate-y-1/4 translate-x-1/4"><DatabaseIcon width="400" height="400" /></div>
                         <div className="relative z-10 flex-1 space-y-4">
                             <div className="inline-block px-3 py-1 rounded-full bg-cyan/10 backdrop-blur-md border border-white/20 text-xs font-bold tracking-wide uppercase">
@@ -1499,7 +1792,7 @@ export default function App() {
             <div className="space-y-6 animate-fade-in">
                 {/* Hero Section */}
                 <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-                    <Card theme={theme} className="lg:col-span-2 !p-8 relative overflow-hidden flex flex-col justify-between min-h-[240px] bg-gradient-to-r from-indigo-600 to-violet-600 border-none dark:from-indigo-900 dark:to-slate-900">
+                    <Card theme={theme} className="lg:col-span-2 !p-8 relative overflow-hidden flex flex-col justify-between min-h-[240px] bg-gradient-to-r from-indigo-600 to-violet-600 border-none dark:from-indigo-900 dark:to-slate-900" noHover>
                         <div className="absolute top-0 right-0 p-4 opacity-10"><LayoutIcon width="250" height="250" className="text-white"/></div>
                         <div className="relative z-10">
                             <div className="flex items-center gap-2 mb-2 text-indigo-100">
@@ -1516,13 +1809,13 @@ export default function App() {
                                 <span>{progress}%</span>
                             </div>
                             <div className="w-full h-3 bg-black/20 rounded-full overflow-hidden">
-                                <div className="h-full bg-cyan shadow-lg transition-all duration-1000 ease-out" style={{ width: `${progress}%` }}></div>
+                                <motion.div initial={{ width: 0 }} animate={{ width: `${progress}%` }} transition={{ duration: 1.5, ease: "easeOut" }} className="h-full bg-cyan shadow-lg"></motion.div>
                             </div>
                         </div>
                     </Card>
 
                     <div className="grid grid-cols-1 gap-6">
-                        <Card theme={theme} className="flex flex-col justify-center">
+                        <Card theme={theme} className="flex flex-col justify-center" noHover>
                             <h3 className={`text-sm font-bold uppercase tracking-wider ${theme.textSecondary} mb-4`}>My Pending Tasks</h3>
                             <div className="flex items-baseline gap-2">
                                 <span className={`text-5xl font-black ${theme.textPrimary}`}>{myTasks.length}</span>
@@ -1552,17 +1845,18 @@ export default function App() {
                                 { label: 'Team', icon: UsersIcon, action: () => setShowTeamModal(true), bg: 'bg-violet-50 text-violet-600 dark:bg-violet-900/20 dark:text-violet-400' },
                                 { label: 'Report', icon: ReportIcon, action: () => setCurrentView(VIEWS.REPORTS), bg: 'bg-amber-50 text-amber-600 dark:bg-amber-900/20 dark:text-amber-400' },
                              ].map((btn, i) => (
-                                 <button key={i} onClick={btn.action} className={`p-4 rounded-2xl flex flex-col items-center justify-center gap-2 transition-all hover:scale-105 hover:shadow-lg ${theme.card}`}>
+                                 <motion.button whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }} key={i} onClick={btn.action} className={`p-4 rounded-2xl flex flex-col items-center justify-center gap-2 transition-all hover:shadow-lg ${theme.card}`}>
                                      <div className={`p-3 rounded-full ${btn.bg}`}><btn.icon className="w-6 h-6"/></div>
                                      <span className={`text-xs font-bold ${theme.textPrimary}`}>{btn.label}</span>
-                                 </button>
+                                 </motion.button>
                              ))}
                         </div>
 
                         {/* -- TEAM MODAL -- */}
+                        <AnimatePresence>
                         {showTeamModal && (
-                            <div className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-4" onClick={() => setShowTeamModal(false)}>
-                                <div className={`w-full max-w-sm p-6 rounded-2xl shadow-2xl ${theme.card} relative`} onClick={e => e.stopPropagation()}>
+                            <motion.div initial={{opacity:0}} animate={{opacity:1}} exit={{opacity:0}} className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-4" onClick={() => setShowTeamModal(false)}>
+                                <motion.div initial={{scale:0.9, y: 20}} animate={{scale:1, y:0}} exit={{scale:0.9, y: 20}} className={`w-full max-w-sm p-6 rounded-2xl shadow-2xl ${theme.card} relative`} onClick={e => e.stopPropagation()}>
                                     <h3 className={`text-xl font-bold mb-4 ${theme.heading}`}>Team Roster</h3>
                                     <div className="space-y-3">
                                         {userTeam.members.map((m, i) => (
@@ -1581,12 +1875,13 @@ export default function App() {
                                         ))}
                                     </div>
                                     <button onClick={() => setShowTeamModal(false)} className="mt-6 w-full py-3 rounded-xl bg-slate-100 dark:bg-slate-800 font-bold text-sm hover:bg-slate-200 dark:hover:bg-slate-700 transition-colors">Close</button>
-                                </div>
-                            </div>
+                                </motion.div>
+                            </motion.div>
                         )}
+                        </AnimatePresence>
                         {/* -- END TEAM MODAL -- */}
 
-                        <Card theme={theme}>
+                        <Card theme={theme} noHover>
                             <div className="flex justify-between items-center mb-6">
                                 <h3 className={`text-lg font-bold ${theme.heading}`}>My Priority List</h3>
                                 <Button theme={theme} variant="secondary" onClick={() => setCurrentView(VIEWS.TRACKING)} className="!py-2 !px-4 text-xs">View Kanban</Button>
@@ -1615,7 +1910,7 @@ export default function App() {
 
                     {/* Right Col: Activity & Files */}
                     <div className="space-y-6">
-                        <Card theme={theme}>
+                        <Card theme={theme} noHover>
                             <h3 className={`text-lg font-bold ${theme.heading} mb-4`}>Recent Files</h3>
                             {recentFiles.length === 0 ? (
                                 <p className={`text-sm ${theme.textSecondary}`}>No files uploaded yet.</p>
@@ -1638,7 +1933,7 @@ export default function App() {
                             </div>
                         </Card>
 
-                         <Card theme={theme}>
+                         <Card theme={theme} noHover>
                             <h3 className={`text-lg font-bold ${theme.heading} mb-4`}>Team Status</h3>
                              <div className="flex items-center justify-between mb-2">
                                 <span className={`text-sm ${theme.textSecondary}`}>Evaluation</span>
@@ -1666,7 +1961,12 @@ export default function App() {
         </div>
     );
 
-    if (!userId) return <AuthScreen />;
+    if (!userId) {
+        if (showWelcome) {
+            return <WelcomeLanding onGetStarted={() => setShowWelcome(false)} />;
+        }
+        return <AuthScreen />;
+    }
 
     return (
         <div className={`flex flex-col min-h-screen ${theme.appBg} ${theme.textPrimary} transition-colors duration-500 font-sans selection:bg-indigo-500 selection:text-white`}>
@@ -1702,8 +2002,14 @@ export default function App() {
                             {notifications.length > 0 && <span className="absolute top-1 right-1 w-2 h-2 bg-rose-500 rounded-full"></span>}
                         </button>
                         
+                        <AnimatePresence>
                         {showNotifications && (
-                            <div className="absolute right-0 top-12 w-64 bg-cyan dark:bg-slate-800 rounded-xl shadow-xl border border-slate-100 dark:border-slate-700 p-4 z-50">
+                            <motion.div 
+                                initial={{ opacity: 0, y: 10, scale: 0.95 }}
+                                animate={{ opacity: 1, y: 0, scale: 1 }}
+                                exit={{ opacity: 0, y: 10, scale: 0.95 }}
+                                className="absolute right-0 top-12 w-64 bg-cyan dark:bg-slate-800 rounded-xl shadow-xl border border-slate-100 dark:border-slate-700 p-4 z-50"
+                            >
                                 <h4 className="text-sm font-bold mb-2">Notifications</h4>
                                 {notifications.length === 0 ? (
                                     <p className="text-xs text-slate-500">No new alerts.</p>
@@ -1716,8 +2022,9 @@ export default function App() {
                                         ))}
                                     </ul>
                                 )}
-                            </div>
+                            </motion.div>
                         )}
+                        </AnimatePresence>
                     </div>
 
                     <ThemeSwitch />
@@ -1745,16 +2052,32 @@ export default function App() {
                 </div>
             </header>
 
-            <div className={`md:hidden fixed top-20 w-full h-auto z-20 transition-all duration-300 ${isMobileMenuOpen ? 'translate-y-0 opacity-100' : '-translate-y-full opacity-0 pointer-events-none'} ${theme.navBg} shadow-xl rounded-b-2xl p-4`}>
-                <div className="space-y-2">
-                    {navItems.map((item) => (
-                        <NavItem key={item.id} view={item.id} label={item.label} IconComponent={item.IconComponent} />
-                    ))}
-                </div>
-            </div>
+            <AnimatePresence>
+            {isMobileMenuOpen && (
+                <motion.div 
+                    initial={{ y: "-100%" }}
+                    animate={{ y: 0 }}
+                    exit={{ y: "-100%" }}
+                    className={`md:hidden fixed top-20 w-full h-auto z-20 ${theme.navBg} shadow-xl rounded-b-2xl p-4`}
+                >
+                    <div className="space-y-2">
+                        {navItems.map((item) => (
+                            <NavItem key={item.id} view={item.id} label={item.label} IconComponent={item.IconComponent} />
+                        ))}
+                    </div>
+                </motion.div>
+            )}
+            </AnimatePresence>
 
             <main className={`flex-1 w-full max-w-7xl mx-auto px-4 lg:px-8 pt-28 pb-12 transition-all duration-300`}>
-                <div className="animate-fade-in">
+                <AnimatePresence mode="wait">
+                    <motion.div
+                        key={currentView}
+                        variants={pageVariants}
+                        initial="initial"
+                        animate="animate"
+                        exit="exit"
+                    >
                     {currentView === VIEWS.DASHBOARD && <Dashboard />}
                     {currentView === VIEWS.REGISTRATION && <RegistrationView />}
                     {currentView === VIEWS.REPORTS && <ReportView />}
@@ -1807,7 +2130,7 @@ export default function App() {
                         <div className="max-w-3xl mx-auto">
                             <h1 className={`text-4xl font-extrabold mb-8 ${theme.heading}`}>Evaluation Results</h1>
                             <h2 className={`text-xl font-bold mb-8 ${theme.heading} text-fuchsia-500`}>{userTeam.name}</h2>
-                            <Card theme={theme}>
+                            <Card theme={theme} noHover>
                                 <div className={`p-8 rounded-2xl text-center ${darkMode ? 'bg-slate-900' : 'bg-slate-50'}`}>
                                     <EvaluateIcon className="w-12 h-12 mx-auto text-fuchsia-500 mb-4"/>
                                     <p className={`text-lg font-medium ${theme.textPrimary} mb-4`}>{userTeam.evaluation.status}</p>
@@ -1845,17 +2168,26 @@ export default function App() {
                             </Card>
                         </div>
                     )}
-                </div>
+                    </motion.div>
+                </AnimatePresence>
             </main>
             <Footer />
             
             {/* TOAST CONTAINER */}
             <div className="fixed top-4 right-4 z-50 flex flex-col gap-2">
+                <AnimatePresence>
                 {toasts.map(toast => (
-                    <div key={toast.id} className={`animate-bounce-in px-4 py-3 rounded-xl shadow-2xl flex items-center space-x-3 text-white ${toast.type === 'success' ? 'bg-emerald-500' : toast.type === 'error' ? 'bg-rose-500' : 'bg-indigo-500'}`}>
+                    <motion.div 
+                        initial={{ opacity: 0, x: 50 }}
+                        animate={{ opacity: 1, x: 0 }}
+                        exit={{ opacity: 0, x: 50 }}
+                        key={toast.id} 
+                        className={`px-4 py-3 rounded-xl shadow-2xl flex items-center space-x-3 text-white ${toast.type === 'success' ? 'bg-emerald-500' : toast.type === 'error' ? 'bg-rose-500' : 'bg-indigo-500'}`}
+                    >
                         <span className="font-medium">{toast.msg}</span>
-                    </div>
+                    </motion.div>
                 ))}
+                </AnimatePresence>
             </div>
         </div>
     );
